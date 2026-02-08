@@ -39,7 +39,82 @@ function handTask(){
     tasklist.innerHTML = "";
     task.forEach((t, i)=>{
         tasklist.innerHTML += `<li>
-        
+        ${t.name} - ${t.deadline}
+        <button onclick="togComp(${i})">${t.completed ? "Undo" : "Done"}</button>
+        <button onclick="delTasks(${i})">Delete</button>
         </li>`
     })
 }
+
+function addSub(){
+    let name = document.getElementById("subname").value;
+    
+    subs.push({
+        id: Date.now(),
+        name
+    })
+
+    loadData();
+    handSub();
+    upDash();
+
+    document.getElementById("subname").value="";
+}
+
+function delSubs(index){
+    subs.splice(index, 1);
+    loadData();
+    handSub();
+    upDash();
+}
+
+function addTasks(){
+    let name = document.getElementById("taskname").value;
+    let deadline = document.getElementById("taskdeadline").value;
+
+    task.push({
+        id: Date.now(),
+        name, 
+        deadline, 
+        completed: false
+    })
+
+    loadData();
+    handTask();
+    upDash();
+
+    document.getElementById("taskname").value = "";
+    document.getElementById("taskdeadline").value="";
+
+}
+
+
+function delTasks(index){
+    task.splice(index, 1);
+    loadData();
+    handTask();
+    upDash();
+}
+
+
+function togComp(index){
+    task[index].completed = !task[index].completed;
+    loadData();
+    handTask();
+    upDash();
+}
+
+function resetData(){
+    localStorage.clear();
+    subs = [];
+    task  =[];
+    handSub();
+    handTask();
+    upDash();
+}
+
+
+
+handSub();
+handTask();
+upDash();
