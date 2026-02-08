@@ -21,5 +21,25 @@ function upDash(){
 }
 
 function handSub(){
-    
+    let sublist = document.getElementById("sublist");
+    sublist.innerHTML= "";
+
+    subs.forEach((sub, i)=>{
+        sublist.innerHTML += `<li> 
+        ${sub.name}
+        <button onclick="delSubs(${i})"> Delete</button>
+        </li>
+        `
+    })
+}
+
+
+function handTask(){
+    let tasklist = document.getElementById("tasklist");
+    tasklist.innerHTML = "";
+    task.forEach((t, i)=>{
+        tasklist.innerHTML += `<li>
+        
+        </li>`
+    })
 }
