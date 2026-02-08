@@ -1,0 +1,46 @@
+.home{
+    height: 200px;
+    width: 300px;
+    display:flexbox;
+}
+
+.dash{
+    height: 200px;
+    width: 300px;
+    border: 2px solid black;
+    display:flexbox;
+    justify-content: center;
+    align-items: center;
+    border-radius: 20px;
+}
+
+.subman{
+    height: 200px;
+    width: 300px;
+    border: 2px solid black;
+    display:flexbox;
+    justify-content: center;
+    align-items: center;
+    border-radius: 20px;
+}
+
+
+.taskman{
+    height: 200px;
+    width: 300px;
+    border: 2px solid black;
+    display:flexbox;
+    justify-content: center;
+    align-items: center;
+    border-radius: 20px;
+}
+
+.settings{
+    height: 200px;
+    width: 300px;
+    border: 2px solid black;
+    display:flexbox;
+    justify-content: center;
+    align-items: center;
+    border-radius: 20px;
+}

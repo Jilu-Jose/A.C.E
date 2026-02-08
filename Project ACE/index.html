@@ -7,7 +7,37 @@
     <link rel="stylesheet" href="./style.css">
 </head>
 <body>
-    
+
+    <section class="home">
+
+        <div class="dash">
+            <h2>DashBoard</h2>
+            <p>Subjects: <span id="sub">0</span></p>
+            <p>Tasks: <span id="tasks">0</span></p>
+            <p>Tasks Done: <span id="donetask">0</span></p>
+        </div>
+
+        <div class="subman">
+            <h2>Subject Management</h2>
+            <p>Add Subjects</p>
+            <input type="text" id="subname" placeholder="Subject Name">
+            <button onclick="addSub()">Add</button>
+            <ul id="sublist"></ul>
+        </div>
+        
+        <div class="taskman">
+            <h2>Add Tasks</h2>
+            <p>Add Tasks</p>
+            <input type="text" placeholder="Enter Task">
+            <button onclick="addTasks()">Add</button>
+            <ul id="tasklist"></ul>
+        </div>
+
+        <div class="settings">
+            <h2>Settings</h2>
+            <button onclick="resetData()">Reset Data</button>
+        </div>
+    </section> 
 </body>
 
 <script src="./script.js"></script>
