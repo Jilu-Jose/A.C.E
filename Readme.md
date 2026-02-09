@@ -88,7 +88,7 @@ Export functionality enables users to back up academic data.
 
 ---
 
-## Technologies Used
+## Tech-Stack Used
 
 - HTML – Structure and layout
 - CSS – Styling and responsive design
@@ -133,21 +133,3 @@ No additional installation or server setup is required.
 
 ---
 
-## Future Enhancements
-
-Possible improvements include:
-
-- Schedule conflict detection
-- Drag-and-drop timetable interface
-- Task filtering and sorting
-- Progress analytics visualization
-- Cloud-based data storage
-- User authentication system
-
----
-
-## Conclusion
-
-A.C.E – Academic Control Engine provides a structured and efficient academic management system. It demonstrates practical front-end development concepts, dynamic data handling, and persistent storage using JavaScript.
-
-The project promotes better organization, time management, and productivity for students.
