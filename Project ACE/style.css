@@ -29,7 +29,7 @@ body{
     display: flex;
     flex-direction: column;
     justify-content: center;
-    box-shadow: 5px 5px 10px rgba(0,0,0,0.2);
+    box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px;
 }
 
 
@@ -41,15 +41,30 @@ body{
 }
 
 .input, select{
-    
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid white;
+    font-size: 14px;
 }
 
+ul{
+    list-style: none;
+    margin-top: 9px;
+}
 
-
-
+li{
+    padding: 8px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid white;
+}
 
 button{
-    padding: 6px 12px;
+    padding: 8px 14px;
+    border-radius: 5px;
+    
+    align-self: flex-start;
     cursor: pointer;
 }
 
