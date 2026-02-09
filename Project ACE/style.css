@@ -9,6 +9,57 @@
 body{
     background: #f4f4f4
 }
+
+.head{
+    width: 100%;
+    max-width: 800px;
+    margin: 30px auto;
+    padding: 20px;
+    border: 3px solid black;
+    border-radius: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: white;
+    border-bottom: 8px solid black; 
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.head:hover{
+    transform: scale(1.05);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+}
+
+
+.logoAr{
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.logo{
+    width: 45px;
+    height: 45px;
+    border: 2px solid black;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.head h1{
+    font-size: 24px;
+    letter-spacing: 2px;
+    font-weight: 600;
+}
+
+
+
+
+
+
 .home{
     min-height: 100vh;
     display: flex;
