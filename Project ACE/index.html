@@ -55,7 +55,7 @@
 
             <input type="time" id="sttime">
             <input type="time" id="endtime">
-            <input type="text" id="schedsub" placeholdee="Subject">
+            <input type="text" id="schedsub" placeholder="Subject">
             <button onclick="addSched()">Add</button>
 
             <ul id="schedlist"></ul>
@@ -66,7 +66,15 @@
 
         <div class="settings">
             <h2>Settings</h2>
-            <button onclick="resetData()">Reset Data</button>
+            
+            <h4>Reset Data</h4>
+            <button onclick="resetData()">Reset</button>
+
+            <h4>Export Data</h4>
+            <button onclick="expData()">Export</button>
+
+
+
         </div>
     </section> 
 </body>

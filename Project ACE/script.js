@@ -66,6 +66,23 @@ function handTask(){
     })
 }
 
+
+
+function handSched(){
+    let li = document.getElementById("schedlist");
+    li.innerHTML = "";
+    sched.forEach((s, i)=>{
+        li.innerHTML += `<li> ${s.day} : ${s.st} - ${s.end} (${s.subj})
+        <button onclick="delSched(${i})">Delete</button></li>`;
+    })
+}
+
+function delSched(index){
+    sched.splice(index, 1);
+    loadData();
+    handSched();
+}
+
 function addSub(){
     let name = document.getElementById("subname").value;
     let priority = document.getElementById("priority").value;
@@ -118,6 +135,21 @@ function delTasks(index){
 }
 
 
+function addSched(){
+    let day = document.getElementById("day").value
+    let st = document.getElementById("sttime").value
+    let end = document.getElementById("endtime").value
+    let subj = document.getElementById("schedsub").value
+
+    sched.push({
+        id: Date.now(),
+        day, st, end, subj
+    })
+
+    loadData()
+    handSched();
+}
+
 function togComp(index){
     task[index].completed = !task[index].completed;
     loadData();
@@ -134,6 +166,20 @@ function resetData(){
     upDash();
 }
 
+
+function expData(){
+    let data = {
+        subjects: subs,
+        tasks: task,
+        schedule: sched
+    }
+
+    let bl = new Blob([JSON.stringify(data, null, 2)],{type: "application/json"});
+    let link = document.createElement("a");
+    link.href = URL.createObjectURL(bl);
+    link.download = "ACE_data.json";
+    link.click();
+}
 
 
 handSub();
