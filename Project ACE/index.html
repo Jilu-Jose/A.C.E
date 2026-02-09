@@ -21,7 +21,7 @@
             <h2>Subject Management</h2>
             <p>Add Subjects</p>
             <input type="text" id="subname" placeholder="Subject Name">
-            
+
             <select id="priority">
                 <option value="Hight">High</option>
                 <option value="Medium">Medium</option>
@@ -40,6 +40,29 @@
             <button onclick="addTasks()">Add</button>
             <ul id="tasklist"></ul>
         </div>
+
+        <div class="schedule">
+            <h2>Schedule Planner</h2>
+            <select id="day">
+                <option >Monday</option>
+                <option >Tuesday</option>
+                <option >Wednesday</option>
+                <option >Thursday</option>
+                <option >Friday</option>
+                <option >Saturday</option>
+                <option >Sunday</option>
+            </select>
+
+            <input type="time" id="sttime">
+            <input type="time" id="endtime">
+            <input type="text" id="schedsub" placeholdee="Subject">
+            <button onclick="addSched()">Add</button>
+
+            <ul id="schedlist"></ul>
+
+        </div>
+
+
 
         <div class="settings">
             <h2>Settings</h2>

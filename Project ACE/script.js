@@ -1,18 +1,23 @@
-let subs = JSON.parse(localStorage.getItem("subjects")) || [];
-let task = JSON.parse(localStorage.getItem("tasks")) || [];
+let subs = JSON.parse(localStorage.getItem("subjects")) || []
+let task = JSON.parse(localStorage.getItem("tasks")) || []
+let sched = JSON.parse(localStorage.getItem("schedule")) || []
 
 function loadData(){
     let substr = JSON.stringify(subs)
-    localStorage.setItem("subjects", substr);
-    let taskstr = JSON.stringify(task);
-    localStorage.setItem("tasks", taskstr);
+    localStorage.setItem("subjects", substr)
+
+    let taskstr = JSON.stringify(task)
+    localStorage.setItem("tasks", taskstr)
+
+    let schedstr = JSON.stringify(sched)
+    localStorage.setItem("schedule", schedstr)
 }
 
 function upDash(){
-    let sublen = document.getElementById("sub");
+    let sublen = document.getElementById("sub")
     sublen.innerText = subs.length;
 
-    let tasklen = document.getElementById("tasks");
+    let tasklen = document.getElementById("tasks")
     tasklen.innerText = task.length;
 
     let comp = task.filter(t => t.comp).length
@@ -44,7 +49,7 @@ function editSub(index){
         loadData()
         handSub();
         upDash();
-        
+
     }
 }
 

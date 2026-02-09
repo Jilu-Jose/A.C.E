@@ -12,7 +12,7 @@
     padding: 20px;
 }
 
-.dash, .subman, .taskman, .settings{
+.dash, .subman, .taskman, .settings, .schedule{
     width: 60%;              
     max-width: 600px;       
     min-height: 200px;
