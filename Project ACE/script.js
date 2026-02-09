@@ -26,11 +26,26 @@ function handSub(){
 
     subs.forEach((sub, i)=>{
         sublist.innerHTML += `<li> 
-        ${sub.name}
+        ${sub.name} (Priority: ${sub.priority})
+        <button onclick="editSub(${i})">Edit</button>
         <button onclick="delSubs(${i})"> Delete</button>
         </li>
         `
     })
+}
+
+function editSub(index){
+    let newname = prompt("Edit Subject: ", subs[index].name);
+    let newprior = prompt("Edit Priority: ", subs[index].priority);
+
+    if(newname){
+        subs[index].name = newname;
+        subs[index].priority = newprior;
+        loadData()
+        handSub();
+        upDash();
+        
+    }
 }
 
 
@@ -48,6 +63,7 @@ function handTask(){
 
 function addSub(){
     let name = document.getElementById("subname").value;
+    let priority = document.getElementById("priority").value;
     
     subs.push({
         id: Date.now(),
