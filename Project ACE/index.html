@@ -3,88 +3,144 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>A.C.E</title>
     <link rel="stylesheet" href="./style.css">
 </head>
 <body>
 
     <header class="head">
         <div class="logoAr">
-            <div class="logo">A</div>
-            <h1>A.C.E</h1>
+        <div class="logo">A</div>
+        <h1>A.C.E</h1>
         </div>
+        <button class="theme-toggle" onclick="toggleTheme()">Dark</button>
     </header>
 
     <section class="home">
 
-        <div class="dash">
-            <h2>DashBoard</h2>
-            <p>Subjects: <span id="sub">0</span></p>
-            <p>Tasks: <span id="tasks">0</span></p>
-            <p>Tasks Done: <span id="donetask">0</span></p>
-        </div>
-
-        <div class="subman">
-            <h2>Subject Management</h2>
-            <p>Add Subjects</p>
-            <input type="text" id="subname" placeholder="Subject Name">
-
-            <select id="priority">
-                <option value="High">High</option>
-                <option value="Medium">Medium</option>
-                <option value="Low">Low</option>
-            </select>
-
-            <button onclick="addSub()">Add</button>
-            <ul id="sublist"></ul>
-        </div>
         
-        <div class="taskman">
-            <h2>Add Tasks</h2>
-            <p>Add Tasks</p>
-            <input type="text" id="taskname" placeholder="Enter Task">
-            <input type="date" id="taskdeadline">
-            <button onclick="addTasks()">Add</button>
-            <ul id="tasklist"></ul>
+        <div class="dash">
+        <h2> Dashboard</h2>
+        <div class="stats-grid">
+        <div class="stat-card">
+        <p class="stat-label">Subjects</p>
+        <p class="stat-value" id="sub">0</p>
         </div>
 
-        <div class="schedule">
-            <h2>Schedule Planner</h2>
-            <select id="day">
-                <option >Monday</option>
-                <option >Tuesday</option>
-                <option >Wednesday</option>
-                <option >Thursday</option>
-                <option >Friday</option>
-                <option >Saturday</option>
-                <option >Sunday</option>
-            </select>
+        <div class="stat-card">
+        <p class="stat-label">Total Tasks</p>
+        <p class="stat-value" id="tasks">0</p>
+        </div>
 
-            <input type="time" id="sttime">
-            <input type="time" id="endtime">
-            <input type="text" id="schedsub" placeholder="Subject">
-            <button onclick="addSched()">Add</button>
+        <div class="stat-card">
+        <p class="stat-label">Completed</p>
+        <p class="stat-value" id="donetask">0</p>
+        </div>
+        </div>
+        </div>
 
-            <ul id="schedlist"></ul>
+        
+        <div class="analytics">
+            <h2>Progress Analytics</h2>
+            <div class="progress-section">
+            <div class="progress-item">
+                    <div class="progress-header">
+                    <span>Task Completion</span>
+                     <span id="task-percent">0%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="task-progress"></div>
+                    </div>
+                </div>
+                <div class="progress-item">
+                <div class="progress-header">
+                    <span>Study Time Goal</span>
+                    <span id="study-percent">0%</span>
+                    </div>
+                    <div class="progress-bar">
+                    <div class="progress-fill" id="study-progress"></div>
+                    </div>
+                </div>
+                </div>
+        </div>
+
+       
+        <div class="two-column">
+            
+            <div class="column">
+                
+                <div class="subman">
+                    <h2>Subject Management</h2>
+                    <div class="input-group">
+                        <input type="text" id="subname" placeholder="Subject Name">
+                        <select id="priority">
+                            <option value="High">High Priority</option>
+                            <option value="Medium">Medium Priority</option>
+                            <option value="Low">Low Priority</option>
+                        </select>
+                        <button onclick="addSub()" class="btn-primary">Add Subject</button>
+                    </div>
+                    <ul id="sublist" class="item-list"></ul>
+                </div>
+
+                <div class="taskman">
+                    <h2>Task Manager</h2>
+                    <div class="input-group">
+                        <input type="text" id="taskname" placeholder="Task Name">
+                        <input type="date" id="taskdeadline">
+                        <button onclick="addTasks()" class="btn-primary">Add Task</button>
+                    </div>
+                    <ul id="tasklist" class="item-list"></ul>
+                </div>
+
+            </div>
+
+          
+            <div class="column">
+                
+            <div class="schedule">
+                <h2>Schedule Planner</h2>
+                    <div class="input-group">
+                        <select id="day">
+                            <option>Monday</option>
+                            <option>Tuesday</option>
+                            <option>Wednesday</option>
+                            <option>Thursday</option>
+                            <option>Friday</option>
+                            <option>Saturday</option>
+                            <option>Sunday</option>
+                        </select>
+                        <div class="time-inputs">
+                            <input type="time" id="sttime">
+                            <span>to</span>
+                            <input type="time" id="endtime">
+                        </div>
+                        <input type="text" id="schedsub" placeholder="Subject">
+                        <button onclick="addSched()" class="btn-primary">Add Schedule</button>
+                    </div>
+                    <ul id="schedlist" class="item-list"></ul>
+                </div>
+
+                <div class="settings">
+                    <h2>Settings</h2>
+                    <div class="settings-group">
+                        <div class="setting-item">
+                            <h4>Reset All Data</h4>
+                            <button onclick="resetData()" class="btn-danger">Reset</button>
+                        </div>
+                        <div class="setting-item">
+                            <h4>Export Data</h4>
+                            <button onclick="expData()" class="btn-success">Export JSON</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
 
         </div>
 
-
-
-        <div class="settings">
-            <h2>Settings</h2>
-
-            <h4>Reset Data</h4>
-            <button onclick="resetData()">Reset</button>
-
-            <h4>Export Data</h4>
-            <button onclick="expData()">Export</button>
-
-
-
-        </div>
     </section> 
-</body>
 
-<script src="./script.js"></script>
+    <script src="./script.js"></script>
+</body>
 </html>
