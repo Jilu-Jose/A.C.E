@@ -89,7 +89,8 @@ function addSub(){
     
     subs.push({
         id: Date.now(),
-        name
+        name,
+        priority
     })
 
     loadData();
