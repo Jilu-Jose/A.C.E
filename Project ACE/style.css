@@ -1,16 +1,17 @@
-:root {
-    --bg-primary: #f5f7fa;
-    --bg-secondary: #ffffff;
-    --text-primary: #2d3748;
-    --text-secondary: #718096;
-    --border-color: #e2e8f0;
-    --accent-color: #4299e1;
-    --success-color: #48bb78;
-    --danger-color: #f56565;
-    --shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
-    --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.1);
-}
 
+.head {
+    width: 100%;
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px 30px;
+    background: var(--bg-secondary);
+    border-radius: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: var(--shadow);
+    transition: all 0.3s ease;
+}
 
 
 * {
@@ -27,19 +28,6 @@ body {
 }
 
 
-.head {
-    width: 100%;
-    max-width: 1200px;
-    margin: 20px auto;
-    padding: 20px 30px;
-    background: var(--bg-secondary);
-    border-radius: 12px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: var(--shadow);
-    transition: all 0.3s ease;
-}
 
 .logoAr {
     display: flex;
@@ -363,4 +351,18 @@ li button {
     --danger-color: #fc8181;
     --shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
     --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.4);
+}
+
+
+:root {
+    --bg-primary: #f5f7fa;
+    --bg-secondary: #ffffff;
+    --text-primary: #2d3748;
+    --text-secondary: #718096;
+    --border-color: #e2e8f0;
+    --accent-color: #4299e1;
+    --success-color: #48bb78;
+    --danger-color: #f56565;
+    --shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+    --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.1);
 }
