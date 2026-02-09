@@ -77,8 +77,8 @@ function handSub(){
         sublist.innerHTML += `<li> 
         <span>${sub.name} <small style="color: var(--text-secondary);">(${sub.priority})</small></span>
         <div>
-            <button onclick="editSub(${i})" class="btn-primary">Edit</button>
-            <button onclick="delSubs(${i})" class="btn-danger">Delete</button>
+        <button onclick="editSub(${i})" class="btn-primary">Edit</button>
+        <button onclick="delSubs(${i})" class="btn-danger">Delete</button>
         </div>
         </li>
         `
@@ -87,7 +87,7 @@ function handSub(){
 
 function editSub(index){
     let newname = prompt("Edit Subject: ", subs[index].name);
-    let newprior = prompt("Edit Priority (High/Medium/Low): ", subs[index].priority);
+    let newprior = prompt("Edit Priority: ", subs[index].priority);
 
     if(newname){
         subs[index].name = newname;
@@ -127,13 +127,13 @@ function handSched(){
 function delSched(index){
     sched.splice(index, 1);
     loadData();
-    handSched();
-    upDash();
+    handSched()
+    upDash()
 }
 
 function addSub(){
-    let name = document.getElementById("subname").value;
-    let priority = document.getElementById("priority").value;
+    let name = document.getElementById("subname").value
+    let priority = document.getElementById("priority").value
     
     if(!name) {
         alert("Please enter subject name");
@@ -147,25 +147,25 @@ function addSub(){
     })
 
     loadData();
-    handSub();
-    upDash();
+    handSub()
+    upDash()
 
-    document.getElementById("subname").value="";
+    document.getElementById("subname").value=""
 }
 
 function delSubs(index){
     subs.splice(index, 1);
-    loadData();
-    handSub();
+    loadData()
+    handSub()
     upDash();
 }
 
 function addTasks(){
     let name = document.getElementById("taskname").value;
-    let deadline = document.getElementById("taskdeadline").value;
+    let deadline = document.getElementById("taskdeadline").value
 
     if(!name || !deadline) {
-        alert("Please enter task name and deadline");
+        alert("Please enter task name and deadline")
         return;
     }
 
@@ -177,8 +177,8 @@ function addTasks(){
     })
 
     loadData();
-    handTask();
-    upDash();
+    handTask()
+    upDash()
 
     document.getElementById("taskname").value = "";
     document.getElementById("taskdeadline").value="";
@@ -197,11 +197,6 @@ function addSched(){
     let end = document.getElementById("endtime").value
     let subj = document.getElementById("schedsub").value
 
-    if(!st || !end || !subj) {
-        alert("Please fill all schedule fields");
-        return;
-    }
-
     sched.push({
         id: Date.now(),
         day, st, end, subj
@@ -211,29 +206,29 @@ function addSched(){
     handSched();
     upDash();
 
-    document.getElementById("sttime").value = "";
-    document.getElementById("endtime").value = "";
-    document.getElementById("schedsub").value = "";
+    document.getElementById("sttime").value = ""
+    document.getElementById("endtime").value = ""
+    document.getElementById("schedsub").value = ""
 }
 
 function togComp(index){
-    task[index].completed = !task[index].completed;
-    loadData();
-    handTask();
-    upDash();
+    task[index].completed = !task[index].completed
+    loadData()
+    handTask()
+    upDash()
 }
 
 function resetData(){
     if(confirm("Are you sure you want to reset all data? This cannot be undone.")) {
-        localStorage.clear();
-        subs = [];
-        task = [];
-        sched = [];
-        handSub();
-        handTask();
-        handSched();
-        upDash();
-        loadTheme(); 
+        localStorage.clear()
+        subs = []
+        task = []
+        sched = []
+        handSub()
+        handTask()
+        handSched()
+        upDash()
+        loadTheme()
     }
 }
 
@@ -244,18 +239,18 @@ function expData(){
         schedule: sched
     }
 
-    let bl = new Blob([JSON.stringify(data, null, 2)],{type: "application/json"});
-    let link = document.createElement("a");
-    link.href = URL.createObjectURL(bl);
-    link.download = "ACE_data.json";
-    link.click();
+    let bl = new Blob([JSON.stringify(data, null, 2)],{type: "application/json"})
+    let link = document.createElement("a")
+    link.href = URL.createObjectURL(bl)
+    link.download = "ACE_data.json"
+    link.click()
 }
 
 
 window.addEventListener('DOMContentLoaded', () => {
     loadTheme();
     handSub();
-    handTask();
-    handSched();
+    handTask()
+    handSched()
     upDash();
 });
