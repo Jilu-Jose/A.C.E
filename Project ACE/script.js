@@ -105,6 +105,10 @@ function handNotes(){
 }
 
 
+
+
+
+
 function addNote(){
     let text = document.getElementById("noteText").value;
     notes.push({
