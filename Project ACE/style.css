@@ -91,6 +91,11 @@ body {
     padding: 25px;
     box-shadow: var(--shadow);
     transition: all 0.3s ease;
+    
+}
+
+.settings{
+    border-left: 10px solid rgb(0, 0, 0);
 }
 
 .dash:hover, .subman:hover, .taskman:hover, .settings:hover, .schedule:hover, .analytics:hover {
@@ -111,6 +116,7 @@ h2 {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 15px;
+
 }
 
 .stat-card {
@@ -120,6 +126,7 @@ h2 {
     text-align: center;
     border: 2px solid var(--border-color);
     transition: all 0.3s ease;
+    border-left: 8px solid black;
 }
 
 .stat-card:hover {
@@ -386,6 +393,7 @@ li button {
     padding: 25px;
     box-shadow: var(--shadow);
     transition: all 0.3s ease;
+    border-left: 10px solid rgb(0, 0, 0);
 }
 
 .notes:hover {
