@@ -178,11 +178,20 @@ h2 {
 }
 
 
+.subman,
+.taskman,
+.schedule,
+.notes {
+    flex: 1; 
+}
+
+
 .two-column {
     width: 100%;
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 20px;
+    align-items: stretch;
 }
 
 .column {
