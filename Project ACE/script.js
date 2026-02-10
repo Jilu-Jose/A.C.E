@@ -3,6 +3,7 @@ let task = JSON.parse(localStorage.getItem("tasks")) || []
 let sched = JSON.parse(localStorage.getItem("schedule")) || []
 
 
+
 function toggleTheme() {
     const currentTheme = document.documentElement.getAttribute('data-theme');
     const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
@@ -23,6 +24,9 @@ function loadTheme() {
         btn.textContent = savedTheme === 'dark' ? 'Dark' : 'Light';
     }
 }
+
+
+
 
 function loadData(){
     let substr = JSON.stringify(subs)
@@ -102,8 +106,11 @@ function handTask(){
     let tasklist = document.getElementById("tasklist");
     tasklist.innerHTML = "";
     task.forEach((t, i)=>{
+        
         const statusStyle = t.completed ? 'style="text-decoration: line-through; opacity: 0.6;"' : '';
         tasklist.innerHTML += `<li ${statusStyle}>
+
+
         <span>${t.name} <small style="color: var(--text-secondary);">${t.deadline}</small></span>
         <div>
             <button onclick="togComp(${i})" class="${t.completed ? 'btn-primary' : 'btn-success'}">${t.completed ? "Undo" : "Done"}</button>
@@ -245,6 +252,8 @@ function expData(){
     link.download = "ACE_data.json"
     link.click()
 }
+
+
 
 
 window.addEventListener('DOMContentLoaded', () => {
