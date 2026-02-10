@@ -1,6 +1,6 @@
-# A.C.E – Advanced Study Planner
+# A.C.E – Academic Control Engine
 
-A.C.E (Advanced Study Planner) is a powerful web-based productivity system designed to help students organize subjects, manage tasks, plan schedules, track study sessions, and analyze performance — all in one clean and responsive interface.
+A.C.E (Academic Control Engine) is a powerful web-based productivity system designed to help students organize subjects, manage tasks, plan schedules, track study sessions, and analyze performance — all in one clean and responsive interface.
 
 This project is built using HTML, CSS, and JavaScript, with LocalStorage for data persistence and Chart.js for analytics visualization.
 
