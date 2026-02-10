@@ -1,136 +1,195 @@
-# A.C.E – Academic Control Engine
+# A.C.E – Advanced Study Planner
 
+A.C.E (Advanced Study Planner) is a powerful web-based productivity system designed to help students organize subjects, manage tasks, plan schedules, track study sessions, and analyze performance — all in one clean and responsive interface.
 
-A.C.E (Academic Control Engine) is a web-based Smart Study Planner designed to help students organize academic activities efficiently. It provides structured subject management, task tracking, schedule planning, and user customization features in a clean and interactive interface.
-
-The system is built using HTML, CSS, and JavaScript, with browser localStorage used for persistent data storage.
+This project is built using HTML, CSS, and JavaScript, with LocalStorage for data persistence and Chart.js for analytics visualization.
 
 ---
 
-## About Project 
+## About
 
-Live: https://a-c-e.vercel.app/ 
+A.C.E Study Planner is designed to improve academic productivity through structured planning and performance tracking.
 
-The objective of A.C.E is to create a centralized academic management platform that enables students to:
-
-- Manage subjects with priority levels
-- Track and monitor tasks with deadlines
-- Plan daily and weekly schedules
-- View productivity insights through a dashboard
-- Customize preferences and export data
+**Live Demo:**  
+[https://a-c-e.vercel.app/]
 
 ---
 
 ## Features
 
-### 1. Dashboard
-
-The Dashboard provides a quick summary of:
-
-- Total number of subjects
-- Total number of tasks
-- Number of completed tasks
-
-This helps users track academic progress efficiently.
+### 1. Dashboard Overview
+- Total Subjects counter  
+- Total Tasks counter  
+- Completed Tasks tracker  
+- Study Sessions count  
+- Weekly calendar overview  
+- Upcoming deadlines section  
 
 ---
 
 ### 2. Subject Management
-
-The Subject Management module allows users to:
-
-- Add new subjects
-- Assign priority levels (High, Medium, Low)
-- Edit subject details
+- Add subjects with:
+  - Priority (High / Medium / Low)
+  - Credit hours
+- Edit existing subjects
 - Delete subjects
-- Persist data using localStorage
-
-Priority levels help users focus on important subjects.
+- Filter subjects by priority
+- Dynamic subject dropdown updates
 
 ---
 
-### 3. Task Management
-
-The Task Management module allows users to:
-
-- Add tasks with deadlines
-- Mark tasks as completed
-- Undo completed tasks
+### 3. Task Manager
+- Create tasks with:
+  - Subject selection
+  - Deadline
+- Mark tasks as completed or undo
 - Delete tasks
-- Automatically update dashboard statistics
-
-All task data is stored locally to maintain persistence.
+- Filter by:
+  - All
+  - Pending
+  - Completed
+- Upcoming deadline sorting
 
 ---
 
 ### 4. Schedule Planner
-
-The Schedule Planner allows users to:
-
-- Add daily or weekly schedule entries
-- Set start and end times
-- Assign subjects to time slots
+- Add weekly study schedules
+- Set:
+  - Day
+  - Start time
+  - End time
+  - Subject
+- Automatically grouped by day
+- Sorted by time
 - Delete schedule entries
-
-Schedule information is stored using localStorage.
-
----
-
-### 5. Settings
-
-The Settings module includes:
-
-- Light and Dark theme toggle
-- Default subject priority preference
-- Data export as JSON file
-- Reset stored data
-
-Export functionality enables users to back up academic data.
+- Weekly calendar session count
 
 ---
 
-## Tech-Stack Used
-
-- HTML – Structure and layout
-- CSS – Styling and responsive design
-- JavaScript – Application logic and interactivity
-- localStorage – Persistent client-side storage
+### 5. Pomodoro Timer
+- Customizable focus duration
+- Customizable break duration
+- Start / Pause / Reset controls
+- Automatic session tracking
+- Daily study session counter
+- Total focus time calculation
+- Session storage with timestamps
 
 ---
 
-## Data Storage
+### 6. Quick Notes System
+- Add categorized notes:
+  - General
+  - Study
+  - Ideas
+  - Important
+- View note details
+- Delete notes
+- Category filtering
+- Quick access side panel
+- Recent notes preview
 
-The following data is stored in localStorage:
+---
 
-- Subjects
-- Tasks
-- Schedule
-- Theme preference
-- Default priority preference
+### 7. Analytics & Progress Tracking
+- Task completion percentage
+- Weekly study goal tracking
+- Average daily tasks
+- Total study hours
+- Productivity score
+- Current streak indicator
 
-This ensures that user data remains available even after refreshing or closing the browser.
+#### Visual Charts (Chart.js)
+- Task distribution (Completed vs Pending)
+- Weekly study activity (Line chart)
+- Subject-wise task distribution (Bar chart)
+
+---
+
+### 8. Theme Support
+- Light mode
+- Dark mode
+- Theme preference saved in LocalStorage
+- Charts dynamically adapt to theme
+
+---
+
+### 9. Data Management
+- Export all data as JSON
+- Reset all stored data
+- Fully LocalStorage based persistence
+
+---
+
+### 10. Responsive Design
+- Mobile-friendly layout
+- Collapsible sidebar (mobile view)
+- Responsive grids
+- Optimized for desktop and tablet use
+
+---
+
+## Tech Stack
+
+- HTML5  
+- CSS3 (Custom Properties / Variables)  
+- Vanilla JavaScript (ES6)  
+- Chart.js  
+- Lucide Icons  
+- LocalStorage API  
 
 ---
 
 ## Project Structure
 
-A.C.E/
-│
-├── index.html
-├── style.css
-├── script.js
-└── README.md
+/project-folder
+│── index.html
+│── style.css
+│── script.js
+│── README.md
 
+
+
+---
+
+## Data Storage
+
+All data is stored in the browser using LocalStorage:
+
+- subjects  
+- tasks  
+- schedule  
+- notes  
+- pomodoroSessions  
+- theme preference  
+
+No backend is required.
 
 ---
 
 ## How to Run
 
-1. Download or clone the repository.
-2. Open `index.html` in any modern web browser.
-3. Start managing your academic workflow.
+1. Clone or download the repository.  
+2. Open `index.html` in your browser.  
+3. Start organizing and tracking your study progress.  
 
-No additional installation or server setup is required.
+No installation required.
 
 ---
 
+## Future Improvements
+
+- Backend integration (Flask / Node.js)
+- Email notifications for deadlines
+- Push notification support
+- User authentication
+- Cloud database support
+- Progressive Web App support
+- Real-time sync
+- Enhanced analytics engine
+
+---
+
+## Version
+
+Current Version: 2.0
