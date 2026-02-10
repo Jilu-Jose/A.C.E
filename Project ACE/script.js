@@ -1,6 +1,7 @@
 let subs = JSON.parse(localStorage.getItem("subjects")) || []
 let task = JSON.parse(localStorage.getItem("tasks")) || []
 let sched = JSON.parse(localStorage.getItem("schedule")) || []
+let notes = JSON.parse(localStorage.getItem("notes")) || []
 
 
 
@@ -37,6 +38,9 @@ function loadData(){
 
     let schedstr = JSON.stringify(sched)
     localStorage.setItem("schedule", schedstr)
+
+    let notestr = JSON.stringify(notes);
+    localStorage.setItem("notes", notestr);
 }
 
 function upDash(){
@@ -87,6 +91,39 @@ function handSub(){
         </li>
         `
     })
+}
+
+
+function handNotes(){
+    let notelist = document.getElementById("notelist");
+    notelist.innerHTML = "";
+
+    notes.forEach((n, i) =>{
+        notelist.innerHTML += `<li> <span>${n.text}</span>
+        <button onclick="delNote(${i})" class="btn-danger">Delete</button></li>`
+    })
+}
+
+
+function addNote(){
+    let text = document.getElementById("noteText").value;
+    notes.push({
+        id: Date.now(),
+        text
+
+    })
+
+    loadData()
+    handNotes();
+
+    document.getElementById("noteText").value="";
+}
+
+function delNote(index){
+    notes.splice(index, 1);
+    loadData();
+    handNotes();
+
 }
 
 function editSub(index){
