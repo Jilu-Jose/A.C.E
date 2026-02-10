@@ -3,154 +3,695 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>A.C.E</title>
+    <title>A.C.E - Advanced Study Planner</title>
     <link rel="stylesheet" href="./style.css">
+    
+    
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+   
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+   
 </head>
 <body>
+    <div class="app-container">
+       
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-area">
+                    <div class="logo">A</div>
+                    <h1 class="app-title">A.C.E</h1>
+                </div>
+                <div class="user-info">
+                    <div class="user-avatar">S</div>
+                    <div class="user-details">
+                        <div class="user-name">Student</div>
+                        <div class="user-status">
+                            <i data-lucide="circle" style="width: 8px; height: 8px; fill: currentColor;"></i>
+                            Active
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-    <header class="head">
-        <div class="logoAr">
-
-        <h1><span style="color: rgb(21, 0, 255)">A</span>.<span style="color:rgb(0, 38, 255)">C</span>.<span style="color:rgb(0, 21, 255)">E</span></h1>
-        </div>
-        <button class="theme-toggle" onclick="toggleTheme()">Dark</button>
-    </header>
-
-    <section class="home">
+            <nav>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-section="dashboard">
+                            <i data-lucide="layout-dashboard" class="nav-icon"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-section="subjects">
+                            <i data-lucide="book-open" class="nav-icon"></i>
+                            <span>Subjects</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-section="tasks">
+                            <i data-lucide="check-square" class="nav-icon"></i>
+                            <span>Tasks</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-section="schedule">
+                            <i data-lucide="calendar" class="nav-icon"></i>
+                            <span>Schedule</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-section="pomodoro">
+                            <i data-lucide="timer" class="nav-icon"></i>
+                            <span>Focus Timer</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-section="notes">
+                            <i data-lucide="sticky-note" class="nav-icon"></i>
+                            <span>Quick Notes</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-section="analytics">
+                            <i data-lucide="bar-chart-3" class="nav-icon"></i>
+                            <span>Analytics</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-section="settings">
+                            <i data-lucide="settings" class="nav-icon"></i>
+                            <span>Settings</span>
+                        </a>
+                    </li>
+                </ul>
+                <button class="theme-toggle-btn" onclick="toggleTheme()">
+                    <i data-lucide="moon" id="theme-icon"></i>
+                    <span id="theme-text">Dark Mode</span>
+                </button>
+            </nav>
+        </aside>
 
         
-        <div class="dash">
-        <h2> Dashboard</h2>
-        <div class="stats-grid">
-        <div class="stat-card">
-        <p class="stat-label">Subjects</p>
-        <p class="stat-value" id="sub">0</p>
-        </div>
-
-        <div class="stat-card">
-        <p class="stat-label">Total Tasks</p>
-        <p class="stat-value" id="tasks">0</p>
-        </div>
-
-        <div class="stat-card">
-        <p class="stat-label">Completed</p>
-        <p class="stat-value" id="donetask">0</p>
-        </div>
-        </div>
+        <div class="quick-panel" id="quickPanel">
+            <div class="quick-panel-header">
+                <h3 class="quick-panel-title">Quick Notes</h3>
+                <button class="icon-btn" onclick="toggleQuickPanel()">
+                    <i data-lucide="x"></i>
+                </button>
+            </div>
+            <div class="quick-panel-content" id="quickPanelContent">
+                
+            </div>
         </div>
 
         
-        <div class="analytics">
-            <h2>Progress Analytics</h2>
-            <div class="progress-section">
-            <div class="progress-item">
-                    <div class="progress-header">
-                    <span>Task Completion</span>
-                     <span id="task-percent">0%</span>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" id="task-progress"></div>
-                    </div>
-                </div>
-                <div class="progress-item">
-                <div class="progress-header">
-                    <span>Study Time Goal</span>
-                    <span id="study-percent">0%</span>
-                    </div>
-                    <div class="progress-bar">
-                    <div class="progress-fill" id="study-progress"></div>
+        <main class="main-content">
+          
+            <section id="dashboard" class="content-section active">
+                <div class="top-bar">
+                    <h1 class="page-title">Dashboard</h1>
+                    <div class="top-actions">
+                        <button class="icon-btn" onclick="initApp()" title="Refresh">
+                            <i data-lucide="refresh-cw"></i>
+                        </button>
+                        <button class="icon-btn" onclick="toggleQuickPanel()" title="Quick Notes">
+                            <i data-lucide="sticky-note"></i>
+                        </button>
+                        <button class="icon-btn" title="Notifications">
+                            <i data-lucide="bell"></i>
+                        </button>
                     </div>
                 </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div>
+                                <div class="stat-label">Total Subjects</div>
+                                <div class="stat-value" id="total-subjects">0</div>
+                            </div>
+                            <div class="stat-icon">
+                                <i data-lucide="book-open"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div>
+                                <div class="stat-label">Total Tasks</div>
+                                <div class="stat-value" id="total-tasks">0</div>
+                            </div>
+                            <div class="stat-icon">
+                                <i data-lucide="list-checks" style="color: var(--success-color);"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div>
+                                <div class="stat-label">Completed</div>
+                                <div class="stat-value" id="completed-tasks">0</div>
+                            </div>
+                            <div class="stat-icon">
+                                <i data-lucide="check-circle" style="color: var(--warning-color);"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div>
+                                <div class="stat-label">Study Sessions</div>
+                                <div class="stat-value" id="study-sessions">0</div>
+                            </div>
+                            <div class="stat-icon">
+                                <i data-lucide="calendar-clock" style="color: var(--purple-color);"></i>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-        </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <i data-lucide="calendar-days"></i>
+                            Weekly Overview
+                        </h2>
+                    </div>
+                    <div class="calendar-grid" id="weekly-calendar"></div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <i data-lucide="alarm-clock"></i>
+                            Upcoming Deadlines
+                        </h2>
+                    </div>
+                    <ul class="item-list" id="upcoming-deadlines"></ul>
+                </div>
+            </section>
+
+         
+            <section id="subjects" class="content-section">
+                <div class="top-bar">
+                    <h1 class="page-title">Subject Management</h1>
+                    <div class="top-actions">
+                        <button class="icon-btn" onclick="toggleQuickPanel()">
+                            <i data-lucide="sticky-note"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <i data-lucide="plus-circle"></i>
+                            Add New Subject
+                        </h2>
+                    </div>
+                    <form class="form-grid" onsubmit="addSubject(event)">
+                        <div class="form-group">
+                            <label class="form-label">Subject Name</label>
+                            <input type="text" id="subject-name" placeholder="e.g., Mathematics" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Priority</label>
+                            <select id="subject-priority">
+                                <option value="High">High</option>
+                                <option value="Medium">Medium</option>
+                                <option value="Low">Low</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Credit Hours</label>
+                            <input type="number" id="subject-credits" placeholder="3" min="1">
+                        </div>
+                        <div class="form-group" style="display: flex; align-items: flex-end;">
+                            <button type="submit" class="btn btn-primary" style="width: 100%;">
+                                <i data-lucide="plus"></i>
+                                Add Subject
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <i data-lucide="book-marked"></i>
+                            My Subjects
+                        </h2>
+                    </div>
+                    <div class="filter-buttons">
+                        <button class="filter-btn active" onclick="filterSubjects('all')">All</button>
+                        <button class="filter-btn" onclick="filterSubjects('High')">High Priority</button>
+                        <button class="filter-btn" onclick="filterSubjects('Medium')">Medium Priority</button>
+                        <button class="filter-btn" onclick="filterSubjects('Low')">Low Priority</button>
+                    </div>
+                    <ul class="item-list" id="subjects-list"></ul>
+                </div>
+            </section>
 
        
-        <div class="two-column">
-            
-            <div class="column">
-                
-            <div class="subman">
-            <h2>Subject Management</h2>
-            <div class="input-group">
-            <input type="text" id="subname" placeholder="Subject Name">
-            <select id="priority">
-                <option value="High">High</option>
-                <option value="Medium">Medium</option>
-                            <option value="Low">Low</option>
-                        </select>
-                <button onclick="addSub()" class="btn-primary">Add Subject</button>
-                </div>
-                    <ul id="sublist" class="item-list"></ul>
-                </div>
-
-                <div class="taskman">
-                <h2>Task Manager</h2>
-                <div class="input-group">
-                        <input type="text" id="taskname" placeholder="Task Name">
-                        <input type="date" id="taskdeadline">
-                        <button onclick="addTasks()" class="btn-primary">Add Task</button>
+            <section id="tasks" class="content-section">
+                <div class="top-bar">
+                    <h1 class="page-title">Task Manager</h1>
+                    <div class="top-actions">
+                        <button class="icon-btn" onclick="toggleQuickPanel()">
+                            <i data-lucide="sticky-note"></i>
+                        </button>
                     </div>
-                    <ul id="tasklist" class="item-list"></ul>
                 </div>
 
-            </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <i data-lucide="file-plus"></i>
+                            Create New Task
+                        </h2>
+                    </div>
+                    <form class="form-grid" onsubmit="addTask(event)">
+                        <div class="form-group">
+                            <label class="form-label">Task Name</label>
+                            <input type="text" id="task-name" placeholder="e.g., Complete Assignment" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Subject</label>
+                            <select id="task-subject"></select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Deadline</label>
+                            <input type="date" id="task-deadline" required>
+                        </div>
+                        <div class="form-group" style="display: flex; align-items: flex-end;">
+                            <button type="submit" class="btn btn-primary" style="width: 100%;">
+                                <i data-lucide="plus"></i>
+                                Add Task
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <i data-lucide="list-todo"></i>
+                            All Tasks
+                        </h2>
+                    </div>
+                    <div class="filter-buttons">
+                        <button class="filter-btn active" onclick="filterTasks('all')">All</button>
+                        <button class="filter-btn" onclick="filterTasks('pending')">Pending</button>
+                        <button class="filter-btn" onclick="filterTasks('completed')">Completed</button>
+                    </div>
+                    <ul class="item-list" id="tasks-list"></ul>
+                </div>
+            </section>
+
+         
+            <section id="schedule" class="content-section">
+                <div class="top-bar">
+                    <h1 class="page-title">Schedule Planner</h1>
+                    <div class="top-actions">
+                        <button class="icon-btn" onclick="toggleQuickPanel()">
+                            <i data-lucide="sticky-note"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <i data-lucide="calendar-plus"></i>
+                            Add Schedule
+                        </h2>
+                    </div>
+                    <form class="form-grid" onsubmit="addSchedule(event)">
+                        <div class="form-group">
+                            <label class="form-label">Day</label>
+                            <select id="schedule-day">
+                                <option>Monday</option>
+                                <option>Tuesday</option>
+                                <option>Wednesday</option>
+                                <option>Thursday</option>
+                                <option>Friday</option>
+                                <option>Saturday</option>
+                                <option>Sunday</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Start Time</label>
+                            <input type="time" id="schedule-start" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">End Time</label>
+                            <input type="time" id="schedule-end" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Subject</label>
+                            <select id="schedule-subject"></select>
+                        </div>
+                        <div class="form-group" style="grid-column: 1 / -1; display: flex; justify-content: flex-start;">
+                            <button type="submit" class="btn btn-primary">
+                                <i data-lucide="plus"></i>
+                                Add Schedule
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <i data-lucide="calendar-range"></i>
+                            Weekly Schedule
+                        </h2>
+                    </div>
+                    <ul class="item-list" id="schedule-list"></ul>
+                </div>
+            </section>
 
           
-            <div class="column">
-                
-            <div class="schedule">
-                <h2>Schedule Planner</h2>
-                    <div class="input-group">
-                        <select id="day">
-                            <option>Monday</option>
-                            <option>Tuesday</option>
-                            <option>Wednesday</option>
-                            <option>Thursday</option>
-                            <option>Friday</option>
-                            <option>Saturday</option>
-                            <option>Sunday</option>
-                        </select>
-                        <div class="time-inputs">
-                            <input type="time" id="sttime">
-                            <span>to</span>
-                            <input type="time" id="endtime">
-                        </div>
-                        <input type="text" id="schedsub" placeholder="Subject">
-                        <button onclick="addSched()" class="btn-primary">Add Schedule</button>
+            <section id="pomodoro" class="content-section">
+                <div class="top-bar">
+                    <h1 class="page-title">Pomodoro Timer</h1>
+                    <div class="top-actions">
+                        <button class="icon-btn" onclick="toggleQuickPanel()">
+                            <i data-lucide="sticky-note"></i>
+                        </button>
                     </div>
-                    <ul id="schedlist" class="item-list"></ul>
                 </div>
 
-
-                <div class="notes">
-                    <h2>Quick Notes</h2>
-                    <div class="input-group">
-                        <textarea id="noteText" placeholder="Write your notes here..." rows="4"></textarea>
-                        <button onclick="addNote()" class="btn-primary">Add</button>
-                    </div>
-                    <ul id = "notelist" class="item-list"></ul>
-                </div>
-
-            </div>
-            
-
-        </div>
-        <div class="settings">
-                    <h2>Settings</h2>
-                    <div class="settings-group">
-                        <div class="setting-item">
-                            <h4>Reset All Data</h4>
-                            <button onclick="resetData()" class="btn-danger">Reset</button>
+                <div class="card">
+                    <div class="timer-display">
+                        <div class="timer-label" id="timer-status">Focus Session</div>
+                        <div class="timer-time" id="timer-display">25:00</div>
+                        <div class="timer-controls">
+                            <button class="btn btn-success" onclick="startTimer()">
+                                <i data-lucide="play"></i>
+                                Start
+                            </button>
+                            <button class="btn btn-danger" onclick="pauseTimer()">
+                                <i data-lucide="pause"></i>
+                                Pause
+                            </button>
+                            <button class="btn btn-primary" onclick="resetTimer()">
+                                <i data-lucide="rotate-ccw"></i>
+                                Reset
+                            </button>
                         </div>
-                        <div class="setting-item">
-                            <h4>Export Data</h4>
-                            <button onclick="expData()" class="btn-success">Export JSON</button>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">Focus Duration (minutes)</label>
+                            <input type="number" id="focus-duration" value="25" min="1">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Break Duration (minutes)</label>
+                            <input type="number" id="break-duration" value="5" min="1">
                         </div>
                     </div>
                 </div>
 
-    </section> 
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <i data-lucide="activity"></i>
+                            Study Sessions Today
+                        </h2>
+                    </div>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-label">Completed Sessions</div>
+                            <div class="stat-value" id="sessions-today">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Total Focus Time</div>
+                            <div class="stat-value" id="focus-time-today">0h</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
 
-    <script src="./script.js"></script>
+           
+            <section id="notes" class="content-section">
+                <div class="top-bar">
+                    <h1 class="page-title">Quick Notes</h1>
+                    <div class="top-actions">
+                        <button class="icon-btn" onclick="toggleQuickPanel()">
+                            <i data-lucide="sticky-note"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <i data-lucide="file-text"></i>
+                            New Note
+                        </h2>
+                    </div>
+                    <form onsubmit="addNote(event)">
+                        <div class="form-group">
+                            <label class="form-label">Note Title</label>
+                            <input type="text" id="note-title" placeholder="Enter note title" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Category</label>
+                            <select id="note-category">
+                                <option value="General">General</option>
+                                <option value="Study">Study</option>
+                                <option value="Ideas">Ideas</option>
+                                <option value="Important">Important</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Content</label>
+                            <textarea id="note-content" placeholder="Write your notes here..." required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i data-lucide="save"></i>
+                            Save Note
+                        </button>
+                    </form>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <i data-lucide="folder-open"></i>
+                            Saved Notes
+                        </h2>
+                    </div>
+                    <div class="filter-buttons">
+                        <button class="filter-btn active" onclick="filterNotes('all')">All</button>
+                        <button class="filter-btn" onclick="filterNotes('General')">General</button>
+                        <button class="filter-btn" onclick="filterNotes('Study')">Study</button>
+                        <button class="filter-btn" onclick="filterNotes('Ideas')">Ideas</button>
+                        <button class="filter-btn" onclick="filterNotes('Important')">Important</button>
+                    </div>
+                    <ul class="item-list" id="notes-list"></ul>
+                </div>
+            </section>
+
+           
+            <section id="analytics" class="content-section">
+                <div class="top-bar">
+                    <h1 class="page-title">Progress Analytics</h1>
+                    <div class="top-actions">
+                        <button class="icon-btn" onclick="toggleQuickPanel()">
+                            <i data-lucide="sticky-note"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <i data-lucide="trending-up"></i>
+                            Overall Progress
+                        </h2>
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-header">
+                            <span class="progress-label">Task Completion Rate</span>
+                            <span class="progress-percentage" id="task-completion-percent">0%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="task-completion-bar"></div>
+                        </div>
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-header">
+                            <span class="progress-label">Weekly Study Goal</span>
+                            <span class="progress-percentage" id="study-goal-percent">0%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="study-goal-bar"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div>
+                                <div class="stat-label">Average Daily Tasks</div>
+                                <div class="stat-value" id="avg-daily-tasks">0</div>
+                            </div>
+                            <div class="stat-icon">
+                                <i data-lucide="bar-chart-2"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div>
+                                <div class="stat-label">Total Study Hours</div>
+                                <div class="stat-value" id="total-study-hours">0h</div>
+                            </div>
+                            <div class="stat-icon">
+                                <i data-lucide="clock" style="color: var(--success-color);"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div>
+                                <div class="stat-label">Current Streak</div>
+                                <div class="stat-value" id="current-streak">0</div>
+                            </div>
+                            <div class="stat-icon">
+                                <i data-lucide="flame" style="color: var(--warning-color);"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div>
+                                <div class="stat-label">Productivity Score</div>
+                                <div class="stat-value" id="productivity-score">0%</div>
+                            </div>
+                            <div class="stat-icon">
+                                <i data-lucide="target" style="color: var(--purple-color);"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <i data-lucide="pie-chart"></i>
+                            Task Distribution
+                        </h2>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="taskChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <i data-lucide="line-chart"></i>
+                            Weekly Activity
+                        </h2>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="activityChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <i data-lucide="bar-chart-4"></i>
+                            Subject Performance
+                        </h2>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="subjectChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+         
+            <section id="settings" class="content-section">
+                <div class="top-bar">
+                    <h1 class="page-title">Settings</h1>
+                    <div class="top-actions">
+                        <button class="icon-btn" onclick="toggleQuickPanel()">
+                            <i data-lucide="sticky-note"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <i data-lucide="database"></i>
+                            Data Management
+                        </h2>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Export All Data</label>
+                        <button class="btn btn-success" onclick="exportData()">
+                            <i data-lucide="download"></i>
+                            Export as JSON
+                        </button>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Reset All Data</label>
+                        <button class="btn btn-danger" onclick="resetAllData()">
+                            <i data-lucide="trash-2"></i>
+                            Reset Everything
+                        </button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <i data-lucide="bell-ring"></i>
+                            Notifications
+                        </h2>
+                    </div>
+                    <div class="form-group">
+                        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                            <input type="checkbox" id="deadline-reminders" checked>
+                            <span>Enable deadline reminders</span>
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                            <input type="checkbox" id="study-reminders" checked>
+                            <span>Enable study session reminders</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <i data-lucide="info"></i>
+                            About
+                        </h2>
+                    </div>
+                    <p style="color: var(--text-secondary); line-height: 1.6;">
+                        <strong>A.C.E Study Planner</strong> - Advanced Learning Management System<br>
+                        Version 2.0<br>
+                        Designed to help students organize, track, and improve their study habits.
+                    </p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="./script.js">
+        
+       
+    </script>
 </body>
 </html>
