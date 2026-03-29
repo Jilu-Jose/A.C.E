@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useData } from '../../context/DataContext';
 import { useAuth } from '../../context/AuthContext';
 import axios from 'axios';
+import BASE_URL from '../../utils/apiBase';
 import { StickyNote, Plus, Trash2, X, Eye, BookOpen, Code, Lightbulb, FileText } from 'lucide-react';
 
 const CATEGORIES = [
@@ -26,7 +27,7 @@ const Notes = () => {
         setNotes(updatedNotes);
         if (!user?.token) return;
         try {
-            await axios.post('/api/data', { notes: updatedNotes }, {
+            await axios.post(`${BASE_URL}/api/data`, { notes: updatedNotes }, {
                 headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${user.token}` }
             });
         } catch (err) {

@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
 import { useAuth } from './AuthContext';
+import BASE_URL from '../utils/apiBase';
 
 const DataContext = createContext();
 
@@ -34,7 +35,7 @@ export const DataProvider = ({ children }) => {
         try {
             setLoadingData(true);
             const config = { headers: { Authorization: `Bearer ${user.token}` } };
-            const { data } = await axios.get('/api/data', config);
+            const { data } = await axios.get(`${BASE_URL}/api/data`, config);
             
             setSubjects(data.subjects || []);
             setTasks(data.tasks || []);
@@ -59,7 +60,7 @@ export const DataProvider = ({ children }) => {
                     Authorization: `Bearer ${user.token}` 
                 } 
             };
-            await axios.post('/api/data', payload, config);
+            await axios.post(`${BASE_URL}/api/data`, payload, config);
         } catch (error) {
             console.error('Failed to sync to cloud:', error);
         }
