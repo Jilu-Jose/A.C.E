@@ -155,3 +155,47 @@ input:focus, textarea:focus, select:focus {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+/* ─── Scrollbar ─────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-secondary); }
+
+/* ─── Responsive card grid ──────────────────────────────────── */
+@media (max-width: 480px) {
+  .card {
+    padding: 1.1rem;
+    border-radius: 0.875rem;
+  }
+}
+
+/* ─── Mobile content padding ────────────────────────────────── */
+@media (max-width: 640px) {
+  input, textarea, select {
+    font-size: 16px; /* prevent iOS zoom */
+  }
+}
+
+/* ─── Prevent layout overflow on very small screens ────────── */
+* {
+  min-width: 0;
+  max-width: 100%;
+}
+
+img, video, canvas, svg {
+  max-width: 100%;
+  height: auto;
+}
+
+/* ─── Slide-in animation utility ────────────────────────────── */
+@keyframes slideInLeft {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
