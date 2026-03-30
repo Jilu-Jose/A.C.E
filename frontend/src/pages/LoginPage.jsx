@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import { Moon, Sun } from 'lucide-react';
+import BrandLogo from '../components/BrandLogo';
 
 const LoginPage = () => {
     const [email, setEmail] = useState('');
@@ -40,8 +41,8 @@ const LoginPage = () => {
 
             <div className="card" style={{ width: '100%', maxWidth: '400px', display: 'flex', flexDirection: 'column', gap: '2rem' }}>
                 <div style={{ textAlign: 'center' }}>
-                    <div style={{ display: 'inline-flex', backgroundColor: 'var(--primary-color)', color: 'white', width: '48px', height: '48px', borderRadius: '12px', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '1.5rem', marginBottom: '1rem' }}>
-                        A
+                    <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1rem' }}>
+                        <BrandLogo size={84} />
                     </div>
                     <h1 style={{ fontSize: '1.8rem', fontWeight: 700 }}>Welcome Back</h1>
                     <p style={{ color: 'var(--text-secondary)' }}>Log in to access your study planner</p>

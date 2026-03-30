@@ -10,6 +10,7 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 
 import Chatbot from '../components/Chatbot';
+import BrandLogo from '../components/BrandLogo';
 import Overview from '../components/modules/Overview';
 import Subjects from '../components/modules/Subjects';
 import Tasks from '../components/modules/Tasks';
@@ -87,21 +88,8 @@ const Dashboard = () => {
                 justifyContent: 'space-between',
                 borderBottom: '1px solid var(--border-color)'
             }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                    <div style={{
-                        background: 'linear-gradient(135deg, var(--primary-color), #ff8c42)',
-                        color: 'white',
-                        width: '34px',
-                        height: '34px',
-                        borderRadius: '10px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        fontWeight: '800',
-                        fontSize: '1rem',
-                        boxShadow: 'var(--shadow-orange)'
-                    }}>A</div>
-                    <span style={{ fontSize: '1.25rem', fontWeight: '800', letterSpacing: '-0.5px' }}>A.C.E</span>
+                <div style={{ display: 'flex', alignItems: 'center', lineHeight: 0 }}>
+                    <BrandLogo size={64} />
                 </div>
                 {isMobile && (
                     <button onClick={() => setSidebarOpen(false)} style={{ color: 'var(--text-secondary)', padding: '0.25rem' }}>

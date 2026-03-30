@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
 import { Moon, Sun, Target, Calendar, BarChart3, Clock, Rocket, ShieldCheck } from 'lucide-react';
+import BrandLogo from '../components/BrandLogo';
 
 const LandingPage = () => {
     const { theme, toggleTheme } = useTheme();
@@ -8,10 +9,9 @@ const LandingPage = () => {
     return (
         <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
             <nav style={{ padding: '1.5rem 5%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: 'var(--card-bg)', borderBottom: '1px solid var(--border-color)', position: 'sticky', top: 0, zIndex: 10 }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <div style={{ backgroundColor: 'var(--primary-color)', color: 'white', width: '36px', height: '36px', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '1.2rem' }}>A</div>
-                    <span style={{ fontSize: '1.5rem', fontWeight: '800', letterSpacing: '1px', color: 'var(--primary-color)' }}>.C.E</span>
-                </div>
+                <Link to="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none', color: 'inherit', lineHeight: 0 }} aria-label="A.C.E home">
+                    <BrandLogo size={72} />
+                </Link>
                 
                 <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                     <button onClick={toggleTheme} style={{ padding: '0.5rem', borderRadius: '50%', color: 'var(--text-primary)' }}>
