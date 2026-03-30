@@ -46,8 +46,12 @@ router.post('/login', async (req, res) => {
     const { email, password } = req.body;
 
     try {
-        const user = await User.findOne({ email });
+        if (!process.env.MONGO_URI) {
+            return res.status(500).json({ message: 'Server Configuration Error: MONGO_URI is not defined.' });
+        }
 
+        const user = await User.findOne({ email });
+        
         if (user && (await user.matchPassword(password))) {
             res.json({
                 _id: user._id,
@@ -59,7 +63,12 @@ router.post('/login', async (req, res) => {
             res.status(401).json({ message: 'Invalid email or password' });
         }
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        console.error('Login Error:', error.message);
+        res.status(500).json({ 
+            message: error.message.includes('buffering timed out') 
+                ? 'Database Connection Timeout. Please check if your MongoDB Atlas IP whitelist is set to 0.0.0.0/0.'
+                : error.message 
+        });
     }
 });
 

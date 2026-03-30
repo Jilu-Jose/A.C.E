@@ -1,6 +1,9 @@
 // Central API base URL resolver.
-// In development, Vite proxy handles /api → localhost:5000, so BASE = ''.
-// In production (Vercel), VITE_API_URL points to the backend deployment.
-const BASE_URL = import.meta.env.VITE_API_URL || '';
+const VITE_API_URL = import.meta.env.VITE_API_URL;
+const BASE_URL = VITE_API_URL || '';
+
+if (import.meta.env.PROD && !VITE_API_URL) {
+    console.warn('VITE_API_URL is not defined. API calls will default to the current domain path.');
+}
 
 export default BASE_URL;

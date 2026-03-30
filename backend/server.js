@@ -35,9 +35,23 @@ app.get('/', (req, res) => {
 });
 
 // Database Connection
-mongoose.connect(process.env.MONGO_URI)
-.then(() => console.log('MongoDB connected successfully'))
-.catch((err) => console.log('MongoDB connection error:', err));
+mongoose.set('bufferCommands', false); // Fail fast if not connected
+
+const connectDB = async () => {
+    try {
+        if (!process.env.MONGO_URI) {
+            console.error('MONGO_URI is missing from environment variables');
+            return;
+        }
+        await mongoose.connect(process.env.MONGO_URI);
+        console.log('MongoDB connected successfully');
+    } catch (err) {
+        console.error('MongoDB connection error:', err.message);
+        // On serverless, we don't necessarily want to exit(1), but let's log it clearly
+    }
+};
+
+connectDB();
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
