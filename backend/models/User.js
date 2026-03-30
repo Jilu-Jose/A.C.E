@@ -34,6 +34,10 @@ const UserSchema = new mongoose.Schema({
     pomodoroSessions: {
         type: Array,
         default: []
+    },
+    flashcards: {
+        type: Array,
+        default: []
     }
 }, {
     timestamps: true

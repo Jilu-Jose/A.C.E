@@ -1,9 +1,6 @@
-import { useState, useCallback } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useData } from '../../context/DataContext';
-import { useAuth } from '../../context/AuthContext';
-import axios from 'axios';
-import BASE_URL from '../../utils/apiBase';
 import {
     Layers, Plus, Trash2, X, ChevronLeft, ChevronRight,
     RotateCcw, Check, BookOpen, Save, Shuffle, Eye,
@@ -68,41 +65,30 @@ const FlipCard = ({ front, back, flipped, onFlip, color }) => {
 
 // ─── Main Flashcards Component ───────────────────────────────────────────
 const Flashcards = () => {
-    const { flashcards, setFlashcards } = useData();
-    const { user } = useAuth();
+    // saveFlashcards(updatedArray) → updates state + persists to MongoDB
+    const { flashcards, saveFlashcards } = useData();
 
     // form
-    const [front,    setFront]    = useState('');
-    const [back,     setBack]     = useState('');
-    const [deckName, setDeckName] = useState('');
+    const [front,     setFront]     = useState('');
+    const [back,      setBack]      = useState('');
+    const [deckName,  setDeckName]  = useState('');
     const [cardColor, setCardColor] = useState('orange');
-    const [showForm,  setShowForm] = useState(false);
-    const [editCard,  setEditCard] = useState(null);
+    const [showForm,  setShowForm]  = useState(false);
+    const [editCard,  setEditCard]  = useState(null);
 
     // study mode
-    const [studyMode,   setStudyMode]   = useState(false);
-    const [studyDeck,   setStudyDeck]   = useState(null); // null = all
-    const [studyIndex,  setStudyIndex]  = useState(0);
-    const [flipped,     setFlipped]     = useState(false);
-    const [gotIt,       setGotIt]       = useState(new Set());
-    const [studyList,   setStudyList]   = useState([]);
-    const [showHidden,  setShowHidden]  = useState(false);
+    const [studyMode,  setStudyMode]  = useState(false);
+    const [studyIndex, setStudyIndex] = useState(0);
+    const [flipped,    setFlipped]    = useState(false);
+    const [gotIt,      setGotIt]      = useState(new Set());
+    const [studyList,  setStudyList]  = useState([]);
+    const [showHidden, setShowHidden] = useState(false);
 
     // filter
     const [filterDeck, setFilterDeck] = useState('All');
 
     const CARD_COLORS = ['orange', 'blue', 'green', 'purple', 'rose', 'cyan'];
-
-    // ── persist ───────────────────────────────────────────────────────
-    const saveCards = useCallback(async (updated) => {
-        setFlashcards(updated);
-        if (!user?.token) return;
-        try {
-            await axios.post(`${BASE_URL}/api/data`, { flashcards: updated }, {
-                headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${user.token}` }
-            });
-        } catch (e) { console.error('Flashcard save failed:', e); }
-    }, [user, setFlashcards]);
+    const colorMap    = { orange: '#ff6a00', blue: '#3b82f6', green: '#22c55e', purple: '#a855f7', rose: '#f43f5e', cyan: '#06b6d4' };
 
     // ── add card ──────────────────────────────────────────────────────
     const handleAdd = (e) => {
@@ -113,18 +99,18 @@ const Flashcards = () => {
             deck: deckName.trim() || 'Default', color: cardColor,
             createdAt: new Date().toISOString()
         };
-        saveCards([card, ...(flashcards || [])]);
+        saveFlashcards([card, ...(flashcards || [])]);
         setFront(''); setBack(''); setDeckName(''); setCardColor('orange');
         setShowForm(false);
     };
 
     // ── delete ────────────────────────────────────────────────────────
-    const handleDelete = (id) => saveCards((flashcards || []).filter(c => c.id !== id));
+    const handleDelete = (id) => saveFlashcards((flashcards || []).filter(c => c.id !== id));
 
     // ── save edit ─────────────────────────────────────────────────────
     const handleEditSave = () => {
         if (!editCard) return;
-        saveCards((flashcards || []).map(c => c.id === editCard.id ? editCard : c));
+        saveFlashcards((flashcards || []).map(c => c.id === editCard.id ? editCard : c));
         setEditCard(null);
     };
 
@@ -134,7 +120,6 @@ const Flashcards = () => {
         if (deckFilter && deckFilter !== 'All') cards = cards.filter(c => c.deck === deckFilter);
         if (cards.length === 0) return;
         setStudyList([...cards].sort(() => Math.random() - 0.5));
-        setStudyDeck(deckFilter || 'All');
         setStudyIndex(0);
         setFlipped(false);
         setGotIt(new Set());
@@ -162,20 +147,18 @@ const Flashcards = () => {
         setStudyIndex(0); setFlipped(false);
     };
 
-    // ── deck list ─────────────────────────────────────────────────────
-    const allCards = flashcards || [];
-    const decks    = ['All', ...new Set(allCards.map(c => c.deck))];
-    const filtered = filterDeck === 'All' ? allCards : allCards.filter(c => c.deck === filterDeck);
-
+    // ── derived ───────────────────────────────────────────────────────
+    const allCards    = flashcards || [];
+    const decks       = ['All', ...new Set(allCards.map(c => c.deck))];
+    const filtered    = filterDeck === 'All' ? allCards : allCards.filter(c => c.deck === filterDeck);
     const currentCard = studyList[studyIndex];
-    const studyProgress = studyList.length > 0 ? Math.round((gotIt.size / studyList.length) * 100) : 0;
+    const studyPct    = studyList.length > 0 ? Math.round((gotIt.size / studyList.length) * 100) : 0;
 
-    // ─────────────────────────────────────────────────────────────────
     return (
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}
             style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
 
-            {/* ── Study Mode UI ── */}
+            {/* ── Study Mode overlay ── */}
             <AnimatePresence>
                 {studyMode && currentCard && (
                     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
@@ -183,7 +166,6 @@ const Flashcards = () => {
                         <motion.div initial={{ scale: 0.9 }} animate={{ scale: 1 }} exit={{ scale: 0.9 }}
                             style={{ backgroundColor: 'var(--bg-color)', borderRadius: '1.5rem', padding: '2rem', maxWidth: '640px', width: '100%', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
 
-                            {/* header */}
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                 <div>
                                     <div style={{ fontWeight: 700, fontSize: '1.1rem' }}>Study Mode</div>
@@ -194,24 +176,16 @@ const Flashcards = () => {
                                 <button onClick={exitStudy} style={{ color: 'var(--text-secondary)' }}><X size={22} /></button>
                             </div>
 
-                            {/* progress bar */}
                             <div style={{ height: '6px', borderRadius: '3px', backgroundColor: 'var(--border-color)', overflow: 'hidden' }}>
-                                <motion.div animate={{ width: `${studyProgress}%` }} transition={{ duration: 0.4 }}
+                                <motion.div animate={{ width: `${studyPct}%` }} transition={{ duration: 0.4 }}
                                     style={{ height: '100%', borderRadius: '3px', backgroundColor: 'var(--success-color)' }} />
                             </div>
 
-                            {/* flip card */}
                             <div style={{ display: 'flex', justifyContent: 'center' }}>
-                                <FlipCard
-                                    front={currentCard.front}
-                                    back={currentCard.back}
-                                    flipped={flipped}
-                                    onFlip={() => setFlipped(v => !v)}
-                                    color={currentCard.color}
-                                />
+                                <FlipCard front={currentCard.front} back={currentCard.back}
+                                    flipped={flipped} onFlip={() => setFlipped(v => !v)} color={currentCard.color} />
                             </div>
 
-                            {/* controls */}
                             <div style={{ display: 'flex', justifyContent: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
                                 <button onClick={prevCard} disabled={studyIndex === 0} className="btn-outline" style={{ padding: '0.6rem 1rem', opacity: studyIndex === 0 ? 0.4 : 1 }}>
                                     <ChevronLeft size={18} />
@@ -219,18 +193,19 @@ const Flashcards = () => {
                                 <button onClick={() => setFlipped(v => !v)} className="btn-outline" style={{ padding: '0.6rem 1.25rem' }}>
                                     <RotateCcw size={16} /> Flip
                                 </button>
-                                <button onClick={markGotIt} className="btn-primary" style={{ padding: '0.6rem 1.25rem', backgroundColor: gotIt.has(currentCard.id) ? 'var(--success-color)' : undefined }}>
+                                <button onClick={markGotIt} className="btn-primary"
+                                    style={{ padding: '0.6rem 1.25rem', backgroundColor: gotIt.has(currentCard.id) ? 'var(--success-color)' : undefined }}>
                                     <Check size={16} /> Got it
                                 </button>
                                 <button onClick={shuffleStudy} className="btn-outline" style={{ padding: '0.6rem 1rem' }}>
                                     <Shuffle size={16} />
                                 </button>
-                                <button onClick={nextCard} disabled={studyIndex === studyList.length - 1} className="btn-outline" style={{ padding: '0.6rem 1rem', opacity: studyIndex === studyList.length - 1 ? 0.4 : 1 }}>
+                                <button onClick={nextCard} disabled={studyIndex === studyList.length - 1} className="btn-outline"
+                                    style={{ padding: '0.6rem 1rem', opacity: studyIndex === studyList.length - 1 ? 0.4 : 1 }}>
                                     <ChevronRight size={18} />
                                 </button>
                             </div>
 
-                            {/* mastered indicators */}
                             <div style={{ display: 'flex', gap: '0.3rem', justifyContent: 'center', flexWrap: 'wrap' }}>
                                 {studyList.map((c, i) => (
                                     <div key={c.id} style={{
@@ -241,7 +216,7 @@ const Flashcards = () => {
                                 ))}
                             </div>
 
-                            {studyProgress === 100 && (
+                            {studyPct === 100 && (
                                 <div style={{ textAlign: 'center', padding: '1rem', backgroundColor: 'rgba(34,197,94,0.1)', borderRadius: '0.75rem', color: 'var(--success-color)', fontWeight: 700 }}>
                                     Outstanding — you mastered all cards in this session!
                                 </div>
@@ -255,10 +230,13 @@ const Flashcards = () => {
             <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'space-between' }}>
                 <div>
                     <h2 style={{ fontSize: '1.25rem', fontWeight: 700 }}>Flashcards</h2>
-                    <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>{allCards.length} cards across {decks.length - 1} deck{decks.length !== 2 ? 's' : ''}</p>
+                    <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
+                        {allCards.length} cards across {decks.length - 1} deck{decks.length !== 2 ? 's' : ''}
+                    </p>
                 </div>
                 <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
-                    <button onClick={() => startStudy(filterDeck !== 'All' ? filterDeck : null)} className="btn-outline" disabled={allCards.length === 0}
+                    <button onClick={() => startStudy(filterDeck !== 'All' ? filterDeck : null)}
+                        className="btn-outline" disabled={allCards.length === 0}
                         style={{ gap: '0.5rem', opacity: allCards.length === 0 ? 0.4 : 1 }}>
                         <BookOpen size={16} /> Study Now
                     </button>
@@ -271,10 +249,10 @@ const Flashcards = () => {
             {/* ── Stats ── */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', gap: '1rem' }}>
                 {[
-                    { label: 'Total Cards', value: allCards.length, color: 'var(--primary-color)' },
+                    { label: 'Total Cards', value: allCards.length,  color: 'var(--primary-color)' },
                     { label: 'Decks',       value: decks.length - 1, color: 'var(--purple-color)' },
                     { label: 'This Week',   value: allCards.filter(c => (Date.now() - new Date(c.createdAt)) < 7 * 86400000).length, color: 'var(--success-color)' },
-                    { label: 'To Review',   value: allCards.length, color: 'var(--warning-color)' },
+                    { label: 'To Review',   value: allCards.length,  color: 'var(--warning-color)' },
                 ].map((s, i) => (
                     <div key={i} className="card" style={{ padding: '1rem', borderTop: `3px solid ${s.color}`, textAlign: 'center' }}>
                         <div style={{ fontSize: '1.75rem', fontWeight: 800 }}>{s.value}</div>
@@ -300,13 +278,11 @@ const Flashcards = () => {
                                     <div>
                                         <label style={{ fontSize: '0.8rem', fontWeight: 500, display: 'block', marginBottom: '0.4rem' }}>Card Color</label>
                                         <div style={{ display: 'flex', gap: '0.5rem', paddingTop: '0.5rem' }}>
-                                            {CARD_COLORS.map(c => {
-                                                const colorMap = { orange: '#ff6a00', blue: '#3b82f6', green: '#22c55e', purple: '#a855f7', rose: '#f43f5e', cyan: '#06b6d4' };
-                                                return (
-                                                    <button key={c} type="button" onClick={() => setCardColor(c)}
-                                                        style={{ width: '22px', height: '22px', borderRadius: '50%', backgroundColor: colorMap[c], border: cardColor === c ? '3px solid var(--text-primary)' : '2px solid transparent', transition: 'border 0.15s' }} />
-                                                );
-                                            })}
+                                            {CARD_COLORS.map(c => (
+                                                <button key={c} type="button" onClick={() => setCardColor(c)}
+                                                    style={{ width: '22px', height: '22px', borderRadius: '50%', backgroundColor: colorMap[c],
+                                                        border: cardColor === c ? '3px solid var(--text-primary)' : '2px solid transparent', transition: 'border 0.15s' }} />
+                                            ))}
                                         </div>
                                     </div>
                                 </div>
@@ -344,7 +320,7 @@ const Flashcards = () => {
                 ))}
             </div>
 
-            {/* ── Deck Study Buttons ── */}
+            {/* ── Per-deck study buttons ── */}
             {decks.filter(d => d !== 'All').length > 0 && (
                 <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
                     {decks.filter(d => d !== 'All').map(d => (
@@ -355,7 +331,7 @@ const Flashcards = () => {
                 </div>
             )}
 
-            {/* ── Cards Grid / Empty State ── */}
+            {/* ── Cards grid / empty state ── */}
             {filtered.length === 0 ? (
                 <div style={{ textAlign: 'center', color: 'var(--text-secondary)', padding: '4rem 2rem' }}>
                     <Layers size={48} style={{ margin: '0 auto 1rem', opacity: 0.3, display: 'block' }} />
@@ -366,7 +342,6 @@ const Flashcards = () => {
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '1.25rem' }}>
                     <AnimatePresence>
                         {filtered.map(card => {
-                            const colorMap = { orange: '#ff6a00', blue: '#3b82f6', green: '#22c55e', purple: '#a855f7', rose: '#f43f5e', cyan: '#06b6d4' };
                             const accent = colorMap[card.color] || colorMap.orange;
                             return (
                                 <motion.div key={card.id} layout initial={{ opacity: 0, scale: 0.93 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.88 }}
@@ -413,7 +388,7 @@ const Flashcards = () => {
                 </div>
             )}
 
-            {/* ── Edit Modal ── */}
+            {/* ── Edit Card Modal ── */}
             <AnimatePresence>
                 {editCard && (
                     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}

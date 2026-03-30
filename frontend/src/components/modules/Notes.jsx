@@ -1,9 +1,6 @@
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useData } from '../../context/DataContext';
-import { useAuth } from '../../context/AuthContext';
-import axios from 'axios';
-import BASE_URL from '../../utils/apiBase';
 import {
     StickyNote, Plus, Trash2, X, Eye, BookOpen, Code,
     Lightbulb, FileText, Search, Pin, PinOff, Copy,
@@ -37,8 +34,7 @@ const countWords  = (str) => str.trim() ? str.trim().split(/\s+/).length : 0;
 
 // ─── Main Notes Component ────────────────────────────────────────────────
 const Notes = () => {
-    const { notes, setNotes } = useData();
-    const { user } = useAuth();
+    const { notes, saveNotes } = useData();
 
     // form state
     const [title,    setTitle]    = useState('');
@@ -81,16 +77,8 @@ const Notes = () => {
         return () => document.removeEventListener('keydown', handler);
     }, []);
 
-    // ── persist to backend ────────────────────────────────────────────
-    const saveNotes = useCallback(async (updated) => {
-        setNotes(updated);
-        if (!user?.token) return;
-        try {
-            await axios.post(`${BASE_URL}/api/data`, { notes: updated }, {
-                headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${user.token}` }
-            });
-        } catch (err) { console.error('Note save failed:', err); }
-    }, [user, setNotes]);
+    // ── persist to backend (via DataContext) ──────────────────────────
+    // saveNotes is provided by DataContext — it updates state AND syncs to MongoDB
 
     // ── add note ─────────────────────────────────────────────────────
     const handleAdd = (e) => {
