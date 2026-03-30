@@ -5,7 +5,8 @@ import {
     StickyNote, Plus, Trash2, X, Eye, BookOpen, Code,
     Lightbulb, FileText, Search, Pin, PinOff, Copy,
     Check, Edit3, Tag, Hash, AlignLeft, Clock, Save,
-    ChevronDown, MoreVertical, Star, StarOff, Terminal
+    ChevronDown, MoreVertical, Star, StarOff, Terminal,
+    Coffee, Zap, Cpu, Database, Braces, AlignJustify
 } from 'lucide-react';
 
 // ─── categories ─────────────────────────────────────────────────────────
@@ -34,7 +35,7 @@ const LANGUAGES = [
     {
         id: 'java',
         label: 'Java',
-        icon: '☕',
+        Icon: Coffee,
         theme: {
             bg: '#1e1e2e',
             headerBg: '#181825',
@@ -42,17 +43,16 @@ const LANGUAGES = [
             lineNumColor: '#585b70',
             codeBg: '#1e1e2e',
             codeColor: '#cdd6f4',
-            accentBar: '#fab387',       // Catppuccin Mocha orange
+            accentBar: '#fab387',
             tabColor: '#fab387',
             badgeBg: 'rgba(250,179,135,0.18)',
             badgeColor: '#fab387',
-            scrollbarColor: '#313244',
         }
     },
     {
         id: 'javascript',
         label: 'JavaScript',
-        icon: '⚡',
+        Icon: Zap,
         theme: {
             bg: '#1c1c1e',
             headerBg: '#111113',
@@ -60,17 +60,16 @@ const LANGUAGES = [
             lineNumColor: '#4a4a50',
             codeBg: '#1c1c1e',
             codeColor: '#e8e8e8',
-            accentBar: '#ffe066',       // JS yellow
+            accentBar: '#ffe066',
             tabColor: '#ffe066',
             badgeBg: 'rgba(255,224,102,0.15)',
             badgeColor: '#ffe066',
-            scrollbarColor: '#2e2e30',
         }
     },
     {
         id: 'python',
         label: 'Python',
-        icon: '🐍',
+        Icon: Braces,
         theme: {
             bg: '#1e2127',
             headerBg: '#171a1f',
@@ -78,17 +77,16 @@ const LANGUAGES = [
             lineNumColor: '#4b5263',
             codeBg: '#1e2127',
             codeColor: '#abb2bf',
-            accentBar: '#3572a5',       // Python blue
+            accentBar: '#3572a5',
             tabColor: '#61afef',
             badgeBg: 'rgba(97,175,239,0.15)',
             badgeColor: '#61afef',
-            scrollbarColor: '#2c313a',
         }
     },
     {
         id: 'cpp',
         label: 'C++',
-        icon: '⚙️',
+        Icon: Cpu,
         theme: {
             bg: '#0d1117',
             headerBg: '#010409',
@@ -96,17 +94,16 @@ const LANGUAGES = [
             lineNumColor: '#30363d',
             codeBg: '#0d1117',
             codeColor: '#c9d1d9',
-            accentBar: '#79c0ff',       // GitHub dark blue
+            accentBar: '#79c0ff',
             tabColor: '#79c0ff',
             badgeBg: 'rgba(121,192,255,0.12)',
             badgeColor: '#79c0ff',
-            scrollbarColor: '#161b22',
         }
     },
     {
         id: 'bash',
         label: 'Linux',
-        icon: '🐧',
+        Icon: Terminal,
         theme: {
             bg: '#0c0c0c',
             headerBg: '#1a1a1a',
@@ -114,17 +111,16 @@ const LANGUAGES = [
             lineNumColor: '#2d4a2d',
             codeBg: '#0c0c0c',
             codeColor: '#4af626',
-            accentBar: '#4af626',       // Terminal green
+            accentBar: '#4af626',
             tabColor: '#4af626',
             badgeBg: 'rgba(74,246,38,0.10)',
             badgeColor: '#4af626',
-            scrollbarColor: '#1a1a1a',
         }
     },
     {
         id: 'sql',
         label: 'SQL',
-        icon: '🗄️',
+        Icon: Database,
         theme: {
             bg: '#1a1625',
             headerBg: '#120f1e',
@@ -132,11 +128,10 @@ const LANGUAGES = [
             lineNumColor: '#44395c',
             codeBg: '#1a1625',
             codeColor: '#f8f8f2',
-            accentBar: '#bd93f9',       // Dracula purple
+            accentBar: '#bd93f9',
             tabColor: '#bd93f9',
             badgeBg: 'rgba(189,147,249,0.15)',
             badgeColor: '#bd93f9',
-            scrollbarColor: '#231d38',
         }
     },
 ];
@@ -176,8 +171,8 @@ const IdeEditor = ({ value, onChange, lang, rows = 10, placeholder }) => {
                     <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#febc2e' }} />
                     <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#28c840' }} />
                 </div>
-                <div style={{ marginLeft: '0.5rem', fontSize: '0.72rem', fontWeight: 600, color: t.tabColor, fontFamily: 'monospace', background: t.codeBg, padding: '0.15rem 0.75rem', borderRadius: '4px 4px 0 0', borderTop: `2px solid ${t.accentBar}` }}>
-                    {lang.icon} {lang.label}{LANG_FILE_EXT[lang.id]}
+                <div style={{ marginLeft: '0.5rem', fontSize: '0.72rem', fontWeight: 600, color: t.tabColor, fontFamily: 'monospace', background: t.codeBg, padding: '0.15rem 0.75rem', borderRadius: '4px 4px 0 0', borderTop: `2px solid ${t.accentBar}`, display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                    <lang.Icon size={13} /> {lang.label}{LANG_FILE_EXT[lang.id]}
                 </div>
                 <div style={{ flex: 1 }} />
                 <span style={{ fontSize: '0.68rem', color: t.lineNumColor, fontFamily: 'monospace' }}>{lines.length} line{lines.length !== 1 ? 's' : ''}</span>
@@ -281,7 +276,7 @@ const CodeBlockModal = ({ code, initialLang, onClose }) => {
                                 letterSpacing: '0.01em',
                             }}
                         >
-                            <span style={{ fontSize: '0.9em' }}>{lang.icon}</span> {lang.label}
+                            <lang.Icon size={13} /> {lang.label}
                         </button>
                     ))}
                     <div style={{ flex: 1 }} />
@@ -307,14 +302,7 @@ const CodeBlockModal = ({ code, initialLang, onClose }) => {
                             borderTop: `2px solid ${t.accentBar}`,
                             fontFamily: '"JetBrains Mono", "Fira Code", "Cascadia Code", monospace',
                         }}>
-                            {selectedLang.icon} {
-                                selectedLang.id === 'java' ? 'Main.java' :
-                                selectedLang.id === 'javascript' ? 'script.js' :
-                                selectedLang.id === 'python' ? 'main.py' :
-                                selectedLang.id === 'cpp' ? 'main.cpp' :
-                                selectedLang.id === 'bash' ? 'terminal.sh' :
-                                'query.sql'
-                            }
+                            <selectedLang.Icon size={13} /> {LANG_FILE_EXT[selectedLang.id].slice(1).toUpperCase()} — {`${selectedLang.label}${LANG_FILE_EXT[selectedLang.id]}`}
                         </div>
                     </div>
                 </div>
@@ -382,7 +370,7 @@ const CodeBlockModal = ({ code, initialLang, onClose }) => {
                             border: `1px solid ${t.accentBar}44`,
                             fontFamily: 'monospace',
                         }}>
-                            {selectedLang.icon} {selectedLang.label}
+                            <selectedLang.Icon size={13} /> {selectedLang.label}
                         </span>
                         <span style={{ fontSize: '0.7rem', color: '#444' }}>
                             {lines.length} line{lines.length !== 1 ? 's' : ''}
@@ -472,7 +460,7 @@ const SelectionPicker = ({ position, onSelect, onDismiss }) => {
                     onMouseEnter={e => e.currentTarget.style.background = lang.theme.badgeBg}
                     onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                 >
-                    <span style={{ fontSize: '1em' }}>{lang.icon}</span>
+                    <lang.Icon size={14} />
                     <span>{lang.label}</span>
                     <span style={{ marginLeft: 'auto', fontSize: '0.65rem', color: '#444', fontFamily: 'monospace' }}>
                         {lang.id === 'java' ? '.java' :
@@ -791,16 +779,18 @@ const Notes = () => {
                                             style={{ padding: '0.3rem 0.75rem', borderRadius: '999px', fontSize: '0.75rem', fontWeight: codeLang === '' ? 600 : 400,
                                                 backgroundColor: codeLang === '' ? 'var(--primary-color)' : 'var(--card-bg)',
                                                 color: codeLang === '' ? '#fff' : 'var(--text-secondary)',
-                                                border: `1.5px solid ${codeLang === '' ? 'var(--primary-color)' : 'var(--border-color)'}`, cursor: 'pointer' }}>
-                                            📝 Plain Text
+                                                border: `1.5px solid ${codeLang === '' ? 'var(--primary-color)' : 'var(--border-color)'}`, cursor: 'pointer',
+                                                display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                                            <AlignJustify size={13} /> Plain Text
                                         </button>
                                         {LANGUAGES.map(lang => (
                                             <button key={lang.id} type="button" onClick={() => setCodeLang(lang.id)}
                                                 style={{ padding: '0.3rem 0.75rem', borderRadius: '999px', fontSize: '0.75rem', fontWeight: codeLang === lang.id ? 600 : 400,
                                                     backgroundColor: codeLang === lang.id ? lang.theme.badgeBg : 'var(--card-bg)',
                                                     color: codeLang === lang.id ? lang.theme.badgeColor : 'var(--text-secondary)',
-                                                    border: `1.5px solid ${codeLang === lang.id ? lang.theme.accentBar : 'var(--border-color)'}`, cursor: 'pointer', transition: 'all 0.15s' }}>
-                                                {lang.icon} {lang.label}
+                                                    border: `1.5px solid ${codeLang === lang.id ? lang.theme.accentBar : 'var(--border-color)'}`, cursor: 'pointer', transition: 'all 0.15s',
+                                                    display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                                                <lang.Icon size={13} /> {lang.label}
                                             </button>
                                         ))}
                                     </div>
@@ -1054,8 +1044,8 @@ const Notes = () => {
                                                     <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#febc2e' }} />
                                                     <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#28c840' }} />
                                                 </div>
-                                                <div style={{ marginLeft: '0.5rem', fontSize: '0.72rem', fontWeight: 600, color: t.tabColor, fontFamily: 'monospace', background: t.codeBg, padding: '0.15rem 0.75rem', borderRadius: '4px', borderTop: `2px solid ${t.accentBar}` }}>
-                                                    {lang.icon} {lang.label}{LANG_FILE_EXT[lang.id]}
+                                                <div style={{ marginLeft: '0.5rem', fontSize: '0.72rem', fontWeight: 600, color: t.tabColor, fontFamily: 'monospace', background: t.codeBg, padding: '0.15rem 0.75rem', borderRadius: '4px', borderTop: `2px solid ${t.accentBar}`, display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                                                    <lang.Icon size={12} /> {lang.label}{LANG_FILE_EXT[lang.id]}
                                                 </div>
                                                 <div style={{ flex: 1 }} />
                                                 <span style={{ fontSize: '0.68rem', padding: '0.15rem 0.6rem', borderRadius: '999px', backgroundColor: t.badgeBg, color: t.badgeColor, fontFamily: 'monospace' }}>{lang.label}</span>
