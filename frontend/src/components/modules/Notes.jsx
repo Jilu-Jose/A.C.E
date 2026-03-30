@@ -1,11 +1,11 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useData } from '../../context/DataContext';
 import {
     StickyNote, Plus, Trash2, X, Eye, BookOpen, Code,
     Lightbulb, FileText, Search, Pin, PinOff, Copy,
     Check, Edit3, Tag, Hash, AlignLeft, Clock, Save,
-    ChevronDown, MoreVertical, Star, StarOff
+    ChevronDown, MoreVertical, Star, StarOff, Terminal
 } from 'lucide-react';
 
 // ─── categories ─────────────────────────────────────────────────────────
@@ -29,8 +29,431 @@ const NOTE_COLORS = [
     { label: 'Peach',   value: '#ffedd5' },
 ];
 
+// ─── Language definitions with IDE themes ──────────────────────────────
+const LANGUAGES = [
+    {
+        id: 'java',
+        label: 'Java',
+        icon: '☕',
+        theme: {
+            bg: '#1e1e2e',
+            headerBg: '#181825',
+            headerText: '#cdd6f4',
+            lineNumColor: '#585b70',
+            codeBg: '#1e1e2e',
+            codeColor: '#cdd6f4',
+            accentBar: '#fab387',       // Catppuccin Mocha orange
+            tabColor: '#fab387',
+            badgeBg: 'rgba(250,179,135,0.18)',
+            badgeColor: '#fab387',
+            scrollbarColor: '#313244',
+        }
+    },
+    {
+        id: 'javascript',
+        label: 'JavaScript',
+        icon: '⚡',
+        theme: {
+            bg: '#1c1c1e',
+            headerBg: '#111113',
+            headerText: '#ffe066',
+            lineNumColor: '#4a4a50',
+            codeBg: '#1c1c1e',
+            codeColor: '#e8e8e8',
+            accentBar: '#ffe066',       // JS yellow
+            tabColor: '#ffe066',
+            badgeBg: 'rgba(255,224,102,0.15)',
+            badgeColor: '#ffe066',
+            scrollbarColor: '#2e2e30',
+        }
+    },
+    {
+        id: 'python',
+        label: 'Python',
+        icon: '🐍',
+        theme: {
+            bg: '#1e2127',
+            headerBg: '#171a1f',
+            headerText: '#61afef',
+            lineNumColor: '#4b5263',
+            codeBg: '#1e2127',
+            codeColor: '#abb2bf',
+            accentBar: '#3572a5',       // Python blue
+            tabColor: '#61afef',
+            badgeBg: 'rgba(97,175,239,0.15)',
+            badgeColor: '#61afef',
+            scrollbarColor: '#2c313a',
+        }
+    },
+    {
+        id: 'cpp',
+        label: 'C++',
+        icon: '⚙️',
+        theme: {
+            bg: '#0d1117',
+            headerBg: '#010409',
+            headerText: '#79c0ff',
+            lineNumColor: '#30363d',
+            codeBg: '#0d1117',
+            codeColor: '#c9d1d9',
+            accentBar: '#79c0ff',       // GitHub dark blue
+            tabColor: '#79c0ff',
+            badgeBg: 'rgba(121,192,255,0.12)',
+            badgeColor: '#79c0ff',
+            scrollbarColor: '#161b22',
+        }
+    },
+    {
+        id: 'bash',
+        label: 'Linux',
+        icon: '🐧',
+        theme: {
+            bg: '#0c0c0c',
+            headerBg: '#1a1a1a',
+            headerText: '#4af626',
+            lineNumColor: '#2d4a2d',
+            codeBg: '#0c0c0c',
+            codeColor: '#4af626',
+            accentBar: '#4af626',       // Terminal green
+            tabColor: '#4af626',
+            badgeBg: 'rgba(74,246,38,0.10)',
+            badgeColor: '#4af626',
+            scrollbarColor: '#1a1a1a',
+        }
+    },
+    {
+        id: 'sql',
+        label: 'SQL',
+        icon: '🗄️',
+        theme: {
+            bg: '#1a1625',
+            headerBg: '#120f1e',
+            headerText: '#bd93f9',
+            lineNumColor: '#44395c',
+            codeBg: '#1a1625',
+            codeColor: '#f8f8f2',
+            accentBar: '#bd93f9',       // Dracula purple
+            tabColor: '#bd93f9',
+            badgeBg: 'rgba(189,147,249,0.15)',
+            badgeColor: '#bd93f9',
+            scrollbarColor: '#231d38',
+        }
+    },
+];
+
 const categoryMeta = (cat) => CATEGORIES.find(c => c.value === cat) || CATEGORIES[0];
 const countWords  = (str) => str.trim() ? str.trim().split(/\s+/).length : 0;
+
+// ─── CodeBlock Modal ─────────────────────────────────────────────────────
+const CodeBlockModal = ({ code, initialLang, onClose }) => {
+    const [selectedLang, setSelectedLang] = useState(initialLang || LANGUAGES[0]);
+    const [copied, setCopied] = useState(false);
+    const lines = code.split('\n');
+
+    const handleCopy = async () => {
+        try {
+            await navigator.clipboard.writeText(code);
+            setCopied(true);
+            setTimeout(() => setCopied(false), 2000);
+        } catch {}
+    };
+
+    const t = selectedLang.theme;
+
+    return (
+        <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={onClose}
+            style={{
+                position: 'fixed', inset: 0,
+                backgroundColor: 'rgba(0,0,0,0.75)',
+                backdropFilter: 'blur(6px)',
+                zIndex: 300,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                padding: '1.5rem'
+            }}
+        >
+            <motion.div
+                initial={{ scale: 0.88, opacity: 0, y: 20 }}
+                animate={{ scale: 1, opacity: 1, y: 0 }}
+                exit={{ scale: 0.88, opacity: 0, y: 20 }}
+                transition={{ type: 'spring', stiffness: 320, damping: 28 }}
+                onClick={e => e.stopPropagation()}
+                style={{
+                    width: '100%', maxWidth: '780px',
+                    borderRadius: '1.1rem',
+                    overflow: 'hidden',
+                    boxShadow: `0 24px 60px rgba(0,0,0,0.6), 0 0 0 1px ${t.accentBar}33`,
+                    border: `1px solid ${t.accentBar}44`,
+                    display: 'flex', flexDirection: 'column',
+                    maxHeight: '88vh',
+                }}
+            >
+                {/* ── Language Picker Bar ── */}
+                <div style={{
+                    display: 'flex', alignItems: 'center', gap: '0.5rem',
+                    padding: '0.75rem 1rem',
+                    background: '#111',
+                    borderBottom: '1px solid #222',
+                    flexWrap: 'wrap',
+                }}>
+                    <Code size={15} color="#888" style={{ flexShrink: 0 }} />
+                    <span style={{ fontSize: '0.75rem', color: '#666', marginRight: '0.25rem', flexShrink: 0 }}>Format as:</span>
+                    {LANGUAGES.map(lang => (
+                        <button
+                            key={lang.id}
+                            onClick={() => setSelectedLang(lang)}
+                            style={{
+                                display: 'flex', alignItems: 'center', gap: '0.35rem',
+                                padding: '0.3rem 0.75rem',
+                                borderRadius: '999px',
+                                fontSize: '0.78rem', fontWeight: 600,
+                                backgroundColor: selectedLang.id === lang.id ? lang.theme.badgeBg : 'transparent',
+                                color: selectedLang.id === lang.id ? lang.theme.badgeColor : '#555',
+                                border: `1.5px solid ${selectedLang.id === lang.id ? lang.theme.accentBar : '#333'}`,
+                                cursor: 'pointer',
+                                transition: 'all 0.18s',
+                                letterSpacing: '0.01em',
+                            }}
+                        >
+                            <span style={{ fontSize: '0.9em' }}>{lang.icon}</span> {lang.label}
+                        </button>
+                    ))}
+                    <div style={{ flex: 1 }} />
+                    <button onClick={onClose} style={{ color: '#555', padding: '0.2rem', flexShrink: 0 }}>
+                        <X size={18} />
+                    </button>
+                </div>
+
+                {/* ── IDE Window Chrome ── */}
+                <div style={{ background: t.headerBg, borderBottom: `1px solid ${t.accentBar}33` }}>
+                    {/* Traffic lights + tab */}
+                    <div style={{ display: 'flex', alignItems: 'center', padding: '0.6rem 1rem 0', gap: '0.4rem' }}>
+                        <div style={{ width: 12, height: 12, borderRadius: '50%', background: '#ff5f57' }} />
+                        <div style={{ width: 12, height: 12, borderRadius: '50%', background: '#febc2e' }} />
+                        <div style={{ width: 12, height: 12, borderRadius: '50%', background: '#28c840' }} />
+                        <div style={{
+                            marginLeft: '0.75rem',
+                            padding: '0.22rem 1.1rem',
+                            borderRadius: '6px 6px 0 0',
+                            background: t.codeBg,
+                            fontSize: '0.73rem', fontWeight: 600,
+                            color: t.tabColor,
+                            borderTop: `2px solid ${t.accentBar}`,
+                            fontFamily: '"JetBrains Mono", "Fira Code", "Cascadia Code", monospace',
+                        }}>
+                            {selectedLang.icon} {
+                                selectedLang.id === 'java' ? 'Main.java' :
+                                selectedLang.id === 'javascript' ? 'script.js' :
+                                selectedLang.id === 'python' ? 'main.py' :
+                                selectedLang.id === 'cpp' ? 'main.cpp' :
+                                selectedLang.id === 'bash' ? 'terminal.sh' :
+                                'query.sql'
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                {/* ── Code Display ── */}
+                <div style={{
+                    background: t.codeBg,
+                    overflowY: 'auto',
+                    flex: 1,
+                    position: 'relative',
+                }}>
+                    {/* Left accent strip */}
+                    <div style={{
+                        position: 'absolute', left: 0, top: 0, bottom: 0,
+                        width: '3px',
+                        background: `linear-gradient(180deg, ${t.accentBar}, ${t.accentBar}66)`,
+                    }} />
+
+                    <table style={{ width: '100%', borderCollapse: 'collapse', fontFamily: '"JetBrains Mono","Fira Code","Cascadia Code","Courier New",monospace', fontSize: '0.875rem' }}>
+                        <tbody>
+                            {lines.map((line, idx) => (
+                                <tr key={idx} style={{ lineHeight: 1.7 }}>
+                                    <td style={{
+                                        textAlign: 'right',
+                                        paddingRight: '1rem',
+                                        paddingLeft: '1rem',
+                                        userSelect: 'none',
+                                        color: t.lineNumColor,
+                                        fontSize: '0.78rem',
+                                        minWidth: '2.5rem',
+                                        verticalAlign: 'top',
+                                        borderRight: `1px solid ${t.lineNumColor}33`,
+                                    }}>
+                                        {idx + 1}
+                                    </td>
+                                    <td style={{
+                                        padding: '0 1.25rem 0 1rem',
+                                        color: t.codeColor,
+                                        whiteSpace: 'pre-wrap',
+                                        wordBreak: 'break-word',
+                                        verticalAlign: 'top',
+                                    }}>
+                                        {line || ' '}
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+
+                {/* ── Footer ── */}
+                <div style={{
+                    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                    padding: '0.6rem 1rem',
+                    background: t.headerBg,
+                    borderTop: `1px solid ${t.accentBar}22`,
+                }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                        <span style={{
+                            display: 'inline-flex', alignItems: 'center', gap: '0.3rem',
+                            fontSize: '0.72rem', fontWeight: 600,
+                            padding: '0.2rem 0.65rem', borderRadius: '999px',
+                            backgroundColor: t.badgeBg,
+                            color: t.badgeColor,
+                            border: `1px solid ${t.accentBar}44`,
+                            fontFamily: 'monospace',
+                        }}>
+                            {selectedLang.icon} {selectedLang.label}
+                        </span>
+                        <span style={{ fontSize: '0.7rem', color: '#444' }}>
+                            {lines.length} line{lines.length !== 1 ? 's' : ''}
+                        </span>
+                    </div>
+                    <motion.button
+                        whileHover={{ scale: 1.04 }}
+                        whileTap={{ scale: 0.96 }}
+                        onClick={handleCopy}
+                        style={{
+                            display: 'flex', alignItems: 'center', gap: '0.4rem',
+                            padding: '0.4rem 1rem',
+                            borderRadius: '0.5rem',
+                            fontSize: '0.8rem', fontWeight: 600,
+                            backgroundColor: copied ? '#1a4a1a' : t.badgeBg,
+                            color: copied ? '#4af626' : t.badgeColor,
+                            border: `1.5px solid ${copied ? '#4af626' : t.accentBar}`,
+                            cursor: 'pointer',
+                            transition: 'all 0.2s',
+                            fontFamily: 'inherit',
+                        }}
+                    >
+                        {copied ? <><Check size={14} /> Copied!</> : <><Copy size={14} /> Copy Code</>}
+                    </motion.button>
+                </div>
+            </motion.div>
+        </motion.div>
+    );
+};
+
+// ─── Selection Language Picker Popup ────────────────────────────────────
+const SelectionPicker = ({ position, onSelect, onDismiss }) => {
+    const ref = useRef(null);
+
+    useEffect(() => {
+        const handler = (e) => {
+            if (ref.current && !ref.current.contains(e.target)) onDismiss();
+        };
+        setTimeout(() => document.addEventListener('mousedown', handler), 0);
+        return () => document.removeEventListener('mousedown', handler);
+    }, [onDismiss]);
+
+    return (
+        <motion.div
+            ref={ref}
+            initial={{ opacity: 0, scale: 0.88, y: 8 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.88, y: 8 }}
+            transition={{ type: 'spring', stiffness: 380, damping: 26 }}
+            style={{
+                position: 'fixed',
+                left: Math.min(position.x, window.innerWidth - 380),
+                top: position.y + 10,
+                zIndex: 400,
+                backgroundColor: '#18181b',
+                border: '1px solid #333',
+                borderRadius: '0.85rem',
+                boxShadow: '0 12px 40px rgba(0,0,0,0.55)',
+                padding: '0.6rem 0.75rem',
+                display: 'flex', flexDirection: 'column', gap: '0.45rem',
+                minWidth: '210px',
+            }}
+        >
+            <div style={{
+                display: 'flex', alignItems: 'center', gap: '0.4rem',
+                fontSize: '0.7rem', color: '#555', paddingBottom: '0.35rem',
+                borderBottom: '1px solid #2a2a2a', marginBottom: '0.1rem',
+            }}>
+                <Code size={12} /> Format selected as code
+            </div>
+            {LANGUAGES.map(lang => (
+                <button
+                    key={lang.id}
+                    onMouseDown={e => { e.preventDefault(); onSelect(lang); }}
+                    style={{
+                        display: 'flex', alignItems: 'center', gap: '0.6rem',
+                        padding: '0.45rem 0.6rem',
+                        borderRadius: '0.5rem',
+                        fontSize: '0.82rem', fontWeight: 500,
+                        color: lang.theme.badgeColor,
+                        textAlign: 'left', cursor: 'pointer',
+                        transition: 'background 0.15s',
+                        background: 'transparent',
+                        border: 'none',
+                        width: '100%',
+                    }}
+                    onMouseEnter={e => e.currentTarget.style.background = lang.theme.badgeBg}
+                    onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                >
+                    <span style={{ fontSize: '1em' }}>{lang.icon}</span>
+                    <span>{lang.label}</span>
+                    <span style={{ marginLeft: 'auto', fontSize: '0.65rem', color: '#444', fontFamily: 'monospace' }}>
+                        {lang.id === 'java' ? '.java' :
+                         lang.id === 'javascript' ? '.js' :
+                         lang.id === 'python' ? '.py' :
+                         lang.id === 'cpp' ? '.cpp' :
+                         lang.id === 'bash' ? '.sh' : '.sql'}
+                    </span>
+                </button>
+            ))}
+        </motion.div>
+    );
+};
+
+// ─── Hook: detect text selection inside a ref'd element ─────────────────
+const useTextSelection = (onSelection) => {
+    const containerRef = useRef(null);
+
+    useEffect(() => {
+        const handleMouseUp = (e) => {
+            setTimeout(() => {
+                const selection = window.getSelection();
+                if (!selection || selection.isCollapsed) return;
+                const selectedText = selection.toString().trim();
+                if (!selectedText || selectedText.length < 2) return;
+
+                // Check if selection is inside our container
+                const range = selection.getRangeAt(0);
+                if (containerRef.current && !containerRef.current.contains(range.commonAncestorContainer)) return;
+
+                const rect = range.getBoundingClientRect();
+                onSelection({
+                    text: selectedText,
+                    position: { x: rect.left, y: rect.bottom },
+                });
+            }, 10);
+        };
+
+        document.addEventListener('mouseup', handleMouseUp);
+        return () => document.removeEventListener('mouseup', handleMouseUp);
+    }, [onSelection]);
+
+    return containerRef;
+};
 
 // ─── Main Notes Component ────────────────────────────────────────────────
 const Notes = () => {
@@ -49,12 +472,34 @@ const Notes = () => {
     const [viewNote,  setViewNote]  = useState(null);
     const [editNote,  setEditNote]  = useState(null);
     const [copied,    setCopied]    = useState(null);
-    const [sortBy,    setSortBy]    = useState('newest');    // newest | oldest | pinned | az
+    const [sortBy,    setSortBy]    = useState('newest');
     const [showForm,  setShowForm]  = useState(false);
-    const [activeMenu, setActiveMenu] = useState(null);     // note id for context menu
+    const [activeMenu, setActiveMenu] = useState(null);
+
+    // code block feature state
+    const [selectionInfo,  setSelectionInfo]  = useState(null); // { text, position }
+    const [codeBlockCode,  setCodeBlockCode]  = useState(null); // triggers modal
 
     const searchRef = useRef(null);
     const menuRef   = useRef(null);
+
+    // ── Handle text selection ────────────────────────────────────────
+    const handleSelection = useCallback((info) => {
+        setSelectionInfo(info);
+    }, []);
+
+    const handleLangSelect = (lang) => {
+        setCodeBlockCode({ code: selectionInfo.text, lang });
+        setSelectionInfo(null);
+        window.getSelection()?.removeAllRanges();
+    };
+
+    const dismissPicker = useCallback(() => {
+        setSelectionInfo(null);
+    }, []);
+
+    // ── Selection-aware content ref (for view modal & cards) ─────────
+    const selectionRef = useTextSelection(handleSelection);
 
     // ── close context menu on outside click ──────────────────────────
     useEffect(() => {
@@ -76,9 +521,6 @@ const Notes = () => {
         document.addEventListener('keydown', handler);
         return () => document.removeEventListener('keydown', handler);
     }, []);
-
-    // ── persist to backend (via DataContext) ──────────────────────────
-    // saveNotes is provided by DataContext — it updates state AND syncs to MongoDB
 
     // ── add note ─────────────────────────────────────────────────────
     const handleAdd = (e) => {
@@ -194,6 +636,19 @@ const Notes = () => {
                         <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '0.2rem' }}>{s.label}</div>
                     </div>
                 ))}
+            </div>
+
+            {/* ── Code Feature Hint ── */}
+            <div style={{
+                display: 'flex', alignItems: 'center', gap: '0.6rem',
+                padding: '0.6rem 1rem',
+                borderRadius: '0.75rem',
+                backgroundColor: 'rgba(168,85,247,0.07)',
+                border: '1px dashed rgba(168,85,247,0.3)',
+                fontSize: '0.78rem', color: 'var(--text-secondary)',
+            }}>
+                <Code size={14} color="#a855f7" style={{ flexShrink: 0 }} />
+                <span><strong style={{ color: '#a855f7' }}>Tip:</strong> Select any text inside a note to instantly format it as a syntax-highlighted code block (Java, JS, Python, C++, Linux, SQL).</span>
             </div>
 
             {/* ── Toolbar: search + sort + new button ── */}
@@ -314,7 +769,10 @@ const Notes = () => {
                     </p>
                 </div>
             ) : (
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(270px, 1fr))', gap: '1.25rem' }}>
+                <div
+                    ref={selectionRef}
+                    style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(270px, 1fr))', gap: '1.25rem' }}
+                >
                     <AnimatePresence>
                         {allOrdered.map(note => {
                             const meta = categoryMeta(note.category);
@@ -487,9 +945,20 @@ const Notes = () => {
                                 </div>
                                 <button onClick={() => setViewNote(null)} style={{ color: 'var(--text-secondary)', padding: '0.25rem' }}><X size={22} /></button>
                             </div>
-                            <div style={{ overflowY: 'auto', flex: 1, lineHeight: 1.85, color: 'var(--text-primary)', whiteSpace: 'pre-wrap', fontSize: '0.95rem', paddingRight: '0.25rem' }}>
+
+                            {/* Selectable content */}
+                            <div
+                                ref={selectionRef}
+                                style={{ overflowY: 'auto', flex: 1, lineHeight: 1.85, color: 'var(--text-primary)', whiteSpace: 'pre-wrap', fontSize: '0.95rem', paddingRight: '0.25rem', userSelect: 'text', cursor: 'text' }}
+                            >
                                 {viewNote.content}
                             </div>
+
+                            {/* Selection hint */}
+                            <div style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '0.35rem', opacity: 0.7 }}>
+                                <Code size={11} /> Select text above to format as code
+                            </div>
+
                             <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end', borderTop: '1px solid var(--border-color)', paddingTop: '0.75rem' }}>
                                 <button onClick={() => handleCopy(viewNote)} className="btn-outline" style={{ fontSize: '0.85rem', padding: '0.5rem 1rem' }}>
                                     {copied === viewNote.id ? <><Check size={15} /> Copied</> : <><Copy size={15} /> Copy</>}
@@ -564,6 +1033,28 @@ const Notes = () => {
                             </div>
                         </motion.div>
                     </motion.div>
+                )}
+            </AnimatePresence>
+
+            {/* ── Selection Language Picker ── */}
+            <AnimatePresence>
+                {selectionInfo && (
+                    <SelectionPicker
+                        position={selectionInfo.position}
+                        onSelect={handleLangSelect}
+                        onDismiss={dismissPicker}
+                    />
+                )}
+            </AnimatePresence>
+
+            {/* ── Code Block Modal ── */}
+            <AnimatePresence>
+                {codeBlockCode && (
+                    <CodeBlockModal
+                        code={codeBlockCode.code}
+                        initialLang={codeBlockCode.lang}
+                        onClose={() => setCodeBlockCode(null)}
+                    />
                 )}
             </AnimatePresence>
         </motion.div>
