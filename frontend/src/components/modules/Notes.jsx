@@ -143,6 +143,69 @@ const LANGUAGES = [
 
 const categoryMeta = (cat) => CATEGORIES.find(c => c.value === cat) || CATEGORIES[0];
 const countWords  = (str) => str.trim() ? str.trim().split(/\s+/).length : 0;
+const getLangById = (id) => LANGUAGES.find(l => l.id === id) || null;
+
+const LANG_FILE_EXT = { java: '.java', javascript: '.js', python: '.py', cpp: '.cpp', bash: '.sh', sql: '.sql' };
+
+// ─── IDE Editor (language-themed textarea with line numbers) ─────────────
+const IdeEditor = ({ value, onChange, lang, rows = 10, placeholder }) => {
+    const t = lang.theme;
+    const lines = value.split('\n');
+    const lineCount = Math.max(lines.length, rows);
+    const textareaRef = useRef(null);
+
+    // Tab key inserts spaces
+    const handleKeyDown = (e) => {
+        if (e.key === 'Tab') {
+            e.preventDefault();
+            const el = e.target;
+            const start = el.selectionStart;
+            const end = el.selectionEnd;
+            const newVal = value.substring(0, start) + '    ' + value.substring(end);
+            onChange(newVal);
+            setTimeout(() => { el.selectionStart = el.selectionEnd = start + 4; }, 0);
+        }
+    };
+
+    return (
+        <div style={{ borderRadius: '0.75rem', overflow: 'hidden', border: `1px solid ${t.accentBar}44`, boxShadow: `0 4px 20px rgba(0,0,0,0.4)` }}>
+            {/* IDE chrome */}
+            <div style={{ background: t.headerBg, padding: '0.5rem 0.875rem', display: 'flex', alignItems: 'center', gap: '0.5rem', borderBottom: `1px solid ${t.accentBar}22` }}>
+                <div style={{ display: 'flex', gap: '0.35rem' }}>
+                    <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#ff5f57' }} />
+                    <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#febc2e' }} />
+                    <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#28c840' }} />
+                </div>
+                <div style={{ marginLeft: '0.5rem', fontSize: '0.72rem', fontWeight: 600, color: t.tabColor, fontFamily: 'monospace', background: t.codeBg, padding: '0.15rem 0.75rem', borderRadius: '4px 4px 0 0', borderTop: `2px solid ${t.accentBar}` }}>
+                    {lang.icon} {lang.label}{LANG_FILE_EXT[lang.id]}
+                </div>
+                <div style={{ flex: 1 }} />
+                <span style={{ fontSize: '0.68rem', color: t.lineNumColor, fontFamily: 'monospace' }}>{lines.length} line{lines.length !== 1 ? 's' : ''}</span>
+            </div>
+            {/* line numbers + textarea */}
+            <div style={{ display: 'flex', background: t.codeBg, position: 'relative' }}>
+                <div style={{ background: `${t.headerBg}cc`, padding: '0.75rem 0.5rem', minWidth: '2.8rem', textAlign: 'right', userSelect: 'none', fontFamily: 'monospace', fontSize: '0.78rem', lineHeight: '1.7', color: t.lineNumColor, borderRight: `1px solid ${t.lineNumColor}22` }}>
+                    {Array.from({ length: lineCount }, (_, i) => <div key={i}>{i + 1}</div>)}
+                </div>
+                <textarea
+                    ref={textareaRef}
+                    value={value}
+                    onChange={e => onChange(e.target.value)}
+                    onKeyDown={handleKeyDown}
+                    placeholder={placeholder || `// Write your ${lang.label} code here...`}
+                    spellCheck={false}
+                    style={{
+                        flex: 1, background: 'transparent', border: 'none', outline: 'none',
+                        padding: '0.75rem 1rem', fontFamily: '"JetBrains Mono","Fira Code","Cascadia Code",monospace',
+                        fontSize: '0.875rem', lineHeight: '1.7', color: t.codeColor,
+                        resize: 'vertical', minHeight: `${Math.max(rows, 8) * 1.7 * 14}px`,
+                        caretColor: t.accentBar,
+                    }}
+                />
+            </div>
+        </div>
+    );
+};
 
 // ─── CodeBlock Modal ─────────────────────────────────────────────────────
 const CodeBlockModal = ({ code, initialLang, onClose }) => {
@@ -465,6 +528,7 @@ const Notes = () => {
     const [category, setCategory] = useState('General');
     const [noteColor, setNoteColor] = useState('');
     const [tags, setTags] = useState('');
+    const [codeLang, setCodeLang] = useState(''); // '' = plain text, else language id
 
     // ui state
     const [filter,    setFilter]    = useState('All');
@@ -532,6 +596,7 @@ const Notes = () => {
             content: content.trim(),
             category,
             color: noteColor,
+            codeLang: codeLang || '',
             tags: tags.split(',').map(t => t.trim()).filter(Boolean),
             pinned: false,
             starred: false,
@@ -539,7 +604,7 @@ const Notes = () => {
             updatedAt: Date.now(),
         };
         saveNotes([newNote, ...notes]);
-        setTitle(''); setContent(''); setCategory('General'); setNoteColor(''); setTags('');
+        setTitle(''); setContent(''); setCategory('General'); setNoteColor(''); setTags(''); setCodeLang('');
         setShowForm(false);
     };
 
@@ -716,15 +781,44 @@ const Notes = () => {
                                     </div>
                                 </div>
 
+                                {/* Code Language Picker */}
+                                <div>
+                                    <label style={{ fontSize: '0.8rem', fontWeight: 500, display: 'block', marginBottom: '0.5rem' }}>
+                                        <Code size={13} style={{ verticalAlign: 'middle', marginRight: '0.25rem' }} /> Code Language <span style={{ color: 'var(--text-secondary)', fontWeight: 400 }}>(optional)</span>
+                                    </label>
+                                    <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap' }}>
+                                        <button type="button" onClick={() => setCodeLang('')}
+                                            style={{ padding: '0.3rem 0.75rem', borderRadius: '999px', fontSize: '0.75rem', fontWeight: codeLang === '' ? 600 : 400,
+                                                backgroundColor: codeLang === '' ? 'var(--primary-color)' : 'var(--card-bg)',
+                                                color: codeLang === '' ? '#fff' : 'var(--text-secondary)',
+                                                border: `1.5px solid ${codeLang === '' ? 'var(--primary-color)' : 'var(--border-color)'}`, cursor: 'pointer' }}>
+                                            📝 Plain Text
+                                        </button>
+                                        {LANGUAGES.map(lang => (
+                                            <button key={lang.id} type="button" onClick={() => setCodeLang(lang.id)}
+                                                style={{ padding: '0.3rem 0.75rem', borderRadius: '999px', fontSize: '0.75rem', fontWeight: codeLang === lang.id ? 600 : 400,
+                                                    backgroundColor: codeLang === lang.id ? lang.theme.badgeBg : 'var(--card-bg)',
+                                                    color: codeLang === lang.id ? lang.theme.badgeColor : 'var(--text-secondary)',
+                                                    border: `1.5px solid ${codeLang === lang.id ? lang.theme.accentBar : 'var(--border-color)'}`, cursor: 'pointer', transition: 'all 0.15s' }}>
+                                                {lang.icon} {lang.label}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+
                                 {/* Content */}
                                 <div>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.4rem' }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
                                         <label style={{ fontSize: '0.8rem', fontWeight: 500 }}>Content</label>
                                         <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>{countWords(content)} words · {content.length} chars</span>
                                     </div>
-                                    <textarea rows={6} value={content} onChange={e => setContent(e.target.value)} required
-                                        placeholder="Write your thoughts, key concepts, or anything worth remembering..."
-                                        style={{ resize: 'vertical', minHeight: '120px', fontFamily: 'inherit' }} />
+                                    {codeLang ? (
+                                        <IdeEditor value={content} onChange={setContent} lang={getLangById(codeLang)} rows={8} />
+                                    ) : (
+                                        <textarea rows={6} value={content} onChange={e => setContent(e.target.value)} required
+                                            placeholder="Write your thoughts, key concepts, or anything worth remembering..."
+                                            style={{ resize: 'vertical', minHeight: '120px', fontFamily: 'inherit' }} />
+                                    )}
                                 </div>
 
                                 {/* Tags */}
@@ -946,18 +1040,47 @@ const Notes = () => {
                                 <button onClick={() => setViewNote(null)} style={{ color: 'var(--text-secondary)', padding: '0.25rem' }}><X size={22} /></button>
                             </div>
 
-                            {/* Selectable content */}
-                            <div
-                                ref={selectionRef}
-                                style={{ overflowY: 'auto', flex: 1, lineHeight: 1.85, color: 'var(--text-primary)', whiteSpace: 'pre-wrap', fontSize: '0.95rem', paddingRight: '0.25rem', userSelect: 'text', cursor: 'text' }}
-                            >
-                                {viewNote.content}
-                            </div>
+                            {/* Content: IDE block or plain text */}
+                            {viewNote.codeLang ? (
+                                (() => {
+                                    const lang = getLangById(viewNote.codeLang);
+                                    const t = lang.theme;
+                                    const lines = viewNote.content.split('\n');
+                                    return (
+                                        <div style={{ flex: 1, overflowY: 'auto', borderRadius: '0.75rem', overflow: 'hidden', border: `1px solid ${t.accentBar}44`, boxShadow: `0 4px 20px rgba(0,0,0,0.35)` }}>
+                                            <div style={{ background: t.headerBg, padding: '0.45rem 0.875rem', display: 'flex', alignItems: 'center', gap: '0.5rem', borderBottom: `1px solid ${t.accentBar}22` }}>
+                                                <div style={{ display: 'flex', gap: '0.35rem' }}>
+                                                    <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#ff5f57' }} />
+                                                    <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#febc2e' }} />
+                                                    <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#28c840' }} />
+                                                </div>
+                                                <div style={{ marginLeft: '0.5rem', fontSize: '0.72rem', fontWeight: 600, color: t.tabColor, fontFamily: 'monospace', background: t.codeBg, padding: '0.15rem 0.75rem', borderRadius: '4px', borderTop: `2px solid ${t.accentBar}` }}>
+                                                    {lang.icon} {lang.label}{LANG_FILE_EXT[lang.id]}
+                                                </div>
+                                                <div style={{ flex: 1 }} />
+                                                <span style={{ fontSize: '0.68rem', padding: '0.15rem 0.6rem', borderRadius: '999px', backgroundColor: t.badgeBg, color: t.badgeColor, fontFamily: 'monospace' }}>{lang.label}</span>
+                                            </div>
+                                            <div style={{ display: 'flex', background: t.codeBg, overflowY: 'auto', maxHeight: '340px' }}>
+                                                <div style={{ background: `${t.headerBg}cc`, padding: '0.75rem 0.5rem', minWidth: '2.8rem', textAlign: 'right', userSelect: 'none', fontFamily: 'monospace', fontSize: '0.78rem', lineHeight: '1.7', color: t.lineNumColor, borderRight: `1px solid ${t.lineNumColor}22` }}>
+                                                    {lines.map((_, i) => <div key={i}>{i + 1}</div>)}
+                                                </div>
+                                                <pre style={{ flex: 1, margin: 0, padding: '0.75rem 1rem', fontFamily: '"JetBrains Mono","Fira Code","Cascadia Code",monospace', fontSize: '0.875rem', lineHeight: '1.7', color: t.codeColor, whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>{viewNote.content}</pre>
+                                            </div>
+                                        </div>
+                                    );
+                                })()
+                            ) : (
+                                <div ref={selectionRef} style={{ overflowY: 'auto', flex: 1, lineHeight: 1.85, color: 'var(--text-primary)', whiteSpace: 'pre-wrap', fontSize: '0.95rem', paddingRight: '0.25rem', userSelect: 'text', cursor: 'text' }}>
+                                    {viewNote.content}
+                                </div>
+                            )}
 
-                            {/* Selection hint */}
-                            <div style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '0.35rem', opacity: 0.7 }}>
-                                <Code size={11} /> Select text above to format as code
-                            </div>
+                            {/* Selection hint (only in plain text mode) */}
+                            {!viewNote.codeLang && (
+                                <div style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '0.35rem', opacity: 0.7 }}>
+                                    <Code size={11} /> Select text above to format as code
+                                </div>
+                            )}
 
                             <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end', borderTop: '1px solid var(--border-color)', paddingTop: '0.75rem' }}>
                                 <button onClick={() => handleCopy(viewNote)} className="btn-outline" style={{ fontSize: '0.85rem', padding: '0.5rem 1rem' }}>
