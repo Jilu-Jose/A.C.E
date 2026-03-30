@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import {
     LayoutDashboard, BookOpen, CheckSquare, Calendar, Timer,
     BarChart3, Settings as SettingsIcon, Moon, Sun, LogOut,
-    MessageSquare, StickyNote, Menu, X
+    MessageSquare, StickyNote, Menu, X, Layers
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -18,6 +18,7 @@ import FocusTimer from '../components/modules/FocusTimer';
 import Analytics from '../components/modules/Analytics';
 import Settings from '../components/modules/Settings';
 import Notes from '../components/modules/Notes';
+import Flashcards from '../components/modules/Flashcards';
 
 const SECTION_LABELS = {
     overview: 'Overview',
@@ -26,6 +27,7 @@ const SECTION_LABELS = {
     schedule: 'Schedule',
     timer: 'Focus Timer',
     notes: 'Notes',
+    flashcards: 'Flashcards',
     analytics: 'Analytics',
     settings: 'Settings',
 };
@@ -62,15 +64,16 @@ const Dashboard = () => {
 
     const renderModule = () => {
         switch (activeSection) {
-            case 'overview': return <Overview key="overview" />;
-            case 'subjects': return <Subjects key="subjects" />;
-            case 'tasks': return <Tasks key="tasks" />;
-            case 'schedule': return <Schedule key="schedule" />;
-            case 'timer': return <FocusTimer key="timer" />;
-            case 'notes': return <Notes key="notes" />;
-            case 'analytics': return <Analytics key="analytics" />;
-            case 'settings': return <Settings key="settings" />;
-            default: return <Overview key="overview" />;
+            case 'overview':    return <Overview   key="overview" />;
+            case 'subjects':    return <Subjects   key="subjects" />;
+            case 'tasks':       return <Tasks      key="tasks" />;
+            case 'schedule':    return <Schedule   key="schedule" />;
+            case 'timer':       return <FocusTimer key="timer" />;
+            case 'notes':       return <Notes      key="notes" />;
+            case 'flashcards':  return <Flashcards key="flashcards" />;
+            case 'analytics':   return <Analytics  key="analytics" />;
+            case 'settings':    return <Settings   key="settings" />;
+            default:            return <Overview   key="overview" />;
         }
     };
 
@@ -137,14 +140,15 @@ const Dashboard = () => {
 
             {/* Nav items */}
             <nav style={{ flex: 1, overflowY: 'auto', padding: '0.75rem 0.75rem', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                <SidebarItem icon={<LayoutDashboard size={18} />} label="Overview" active={activeSection === 'overview'} onClick={() => handleNavClick('overview')} />
-                <SidebarItem icon={<BookOpen size={18} />} label="Subjects" active={activeSection === 'subjects'} onClick={() => handleNavClick('subjects')} />
-                <SidebarItem icon={<CheckSquare size={18} />} label="Tasks" active={activeSection === 'tasks'} onClick={() => handleNavClick('tasks')} />
-                <SidebarItem icon={<Calendar size={18} />} label="Schedule" active={activeSection === 'schedule'} onClick={() => handleNavClick('schedule')} />
-                <SidebarItem icon={<Timer size={18} />} label="Focus Timer" active={activeSection === 'timer'} onClick={() => handleNavClick('timer')} />
-                <SidebarItem icon={<StickyNote size={18} />} label="Notes" active={activeSection === 'notes'} onClick={() => handleNavClick('notes')} />
-                <SidebarItem icon={<BarChart3 size={18} />} label="Analytics" active={activeSection === 'analytics'} onClick={() => handleNavClick('analytics')} />
-                <SidebarItem icon={<SettingsIcon size={18} />} label="Settings" active={activeSection === 'settings'} onClick={() => handleNavClick('settings')} />
+                <SidebarItem icon={<LayoutDashboard size={18} />} label="Overview"     active={activeSection === 'overview'}    onClick={() => handleNavClick('overview')} />
+                <SidebarItem icon={<BookOpen size={18} />}        label="Subjects"     active={activeSection === 'subjects'}    onClick={() => handleNavClick('subjects')} />
+                <SidebarItem icon={<CheckSquare size={18} />}     label="Tasks"        active={activeSection === 'tasks'}       onClick={() => handleNavClick('tasks')} />
+                <SidebarItem icon={<Calendar size={18} />}        label="Schedule"     active={activeSection === 'schedule'}    onClick={() => handleNavClick('schedule')} />
+                <SidebarItem icon={<Timer size={18} />}           label="Focus Timer"  active={activeSection === 'timer'}       onClick={() => handleNavClick('timer')} />
+                <SidebarItem icon={<StickyNote size={18} />}      label="Notes"        active={activeSection === 'notes'}       onClick={() => handleNavClick('notes')} />
+                <SidebarItem icon={<Layers size={18} />}          label="Flashcards"   active={activeSection === 'flashcards'}  onClick={() => handleNavClick('flashcards')} />
+                <SidebarItem icon={<BarChart3 size={18} />}       label="Analytics"    active={activeSection === 'analytics'}   onClick={() => handleNavClick('analytics')} />
+                <SidebarItem icon={<SettingsIcon size={18} />}    label="Settings"     active={activeSection === 'settings'}    onClick={() => handleNavClick('settings')} />
             </nav>
 
             {/* Bottom actions */}

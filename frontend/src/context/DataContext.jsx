@@ -14,6 +14,7 @@ export const DataProvider = ({ children }) => {
     const [schedule, setSchedule] = useState([]);
     const [notes, setNotes] = useState([]);
     const [pomodoroSessions, setPomodoroSessions] = useState([]);
+    const [flashcards, setFlashcards] = useState([]);
     const [loadingData, setLoadingData] = useState(true);
 
     // Fetch data when user logs in
@@ -27,6 +28,7 @@ export const DataProvider = ({ children }) => {
             setSchedule([]);
             setNotes([]);
             setPomodoroSessions([]);
+            setFlashcards([]);
             setLoadingData(false);
         }
     }, [user]);
@@ -42,6 +44,7 @@ export const DataProvider = ({ children }) => {
             setSchedule(data.schedule || []);
             setNotes(data.notes || []);
             setPomodoroSessions(data.pomodoroSessions || []);
+            setFlashcards(data.flashcards || []);
         } catch (error) {
             console.error('Error fetching data:', error);
         } finally {
@@ -117,9 +120,9 @@ export const DataProvider = ({ children }) => {
 
     return (
         <DataContext.Provider value={{
-            subjects, tasks, schedule, notes, pomodoroSessions, loadingData,
+            subjects, tasks, schedule, notes, pomodoroSessions, flashcards, loadingData,
             addSubject, deleteSubject, addTask, toggleTask, deleteTask,
-            addSchedule, deleteSchedule, addPomodoroSession, setNotes
+            addSchedule, deleteSchedule, addPomodoroSession, setNotes, setFlashcards
         }}>
             {children}
         </DataContext.Provider>
