@@ -18,6 +18,7 @@
   --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
   --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
   --shadow-orange: 0 0 20px rgba(255, 106, 0, 0.35);
+  --ace-e-color: #000000;
 }
 
 [data-theme="dark"] {
@@ -40,6 +41,7 @@
   --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.5), 0 2px 4px -2px rgb(0 0 0 / 0.5);
   --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.5), 0 4px 6px -4px rgb(0 0 0 / 0.5);
   --shadow-orange: 0 0 24px rgba(255, 69, 0, 0.4);
+  --ace-e-color: #ffffff;
 }
 
 * {
@@ -199,27 +201,125 @@ img, video, canvas, svg {
   to { opacity: 1; }
 }
 
-/* ─── Brand logo (circle + motion) ─────────────────────────── */
+/* ─── Brand wordmark (A.C.E) ───────────────────────────────── */
 .brand-logo {
-  position: relative;
-  border-radius: 50%;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.02em;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: 0.03em;
   flex-shrink: 0;
-  padding: 3px;
-  background: linear-gradient(135deg, var(--primary-color), #ffb347);
-  box-shadow:
-    var(--shadow-orange),
-    0 0 0 1px rgba(255, 255, 255, 0.12);
-  filter: drop-shadow(0 4px 14px rgba(0, 0, 0, 0.45));
+  padding: 0.2em 0.32em;
+  border-radius: 0.42em;
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  background: rgba(17, 17, 17, 0.9);
   animation: brandLogoFloat 3.5s ease-in-out infinite, brandLogoPulse 2.4s ease-in-out infinite;
 }
 
+.brand-logo__orange {
+  color: var(--primary-color);
+  text-shadow: 0 0 12px var(--primary-glow);
+}
+
+.brand-logo__e {
+  color: var(--ace-e-color);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+/* Auth/Landing polish */
+.hero-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.hero-card {
+  border: 1px solid var(--border-color);
+  background: linear-gradient(160deg, var(--card-bg), rgba(255, 122, 24, 0.05));
+  border-radius: 1rem;
+  padding: 1rem 1.1rem;
+}
+
+.auth-shell {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: minmax(280px, 1fr) minmax(320px, 440px);
+  gap: 1.2rem;
+  align-items: stretch;
+  padding: 1.2rem;
+  background:
+    radial-gradient(circle at 15% 15%, rgba(255, 122, 24, 0.14), transparent 38%),
+    radial-gradient(circle at 78% 8%, rgba(168, 85, 247, 0.12), transparent 32%),
+    var(--bg-color);
+}
+
+.auth-side {
+  border-radius: 1.1rem;
+  border: 1px solid var(--border-color);
+  background: linear-gradient(150deg, rgba(255, 122, 24, 0.1), transparent 45%), var(--card-bg);
+  padding: 1.4rem;
+}
+
+.auth-kpi {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.65rem;
+  margin-top: 1.3rem;
+}
+
+.auth-kpi > div {
+  border: 1px solid var(--border-color);
+  border-radius: 0.8rem;
+  text-align: center;
+  padding: 0.7rem 0.4rem;
+  background-color: rgba(255, 122, 24, 0.06);
+}
+
+.note-tag {
+  font-size: 0.68rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 122, 24, 0.26);
+  background: linear-gradient(135deg, rgba(255,122,24,0.2), rgba(168,85,247,0.12));
+  color: var(--text-primary);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.code-token-keyword { color: #c678dd; font-weight: 600; }
+.code-token-string { color: #98c379; }
+.code-token-number { color: #d19a66; }
+.code-token-comment { color: #7f848e; font-style: italic; }
+.code-token-fn { color: #61afef; }
+
+@media (max-width: 880px) {
+  .auth-shell {
+    grid-template-columns: 1fr;
+    padding: 0.9rem;
+  }
+}
+
+@media (max-width: 680px) {
+  .hero-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .brand-logo {
+    animation: none;
+  }
+}
+
+/* Keep legacy class available if referenced elsewhere */
 .brand-logo__img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   border-radius: 50%;
   display: block;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.14);
 }
 
 @keyframes brandLogoFloat {

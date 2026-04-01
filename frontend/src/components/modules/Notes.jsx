@@ -142,6 +142,69 @@ const getLangById = (id) => LANGUAGES.find(l => l.id === id) || null;
 
 const LANG_FILE_EXT = { java: '.java', javascript: '.js', python: '.py', cpp: '.cpp', bash: '.sh', sql: '.sql' };
 
+const escapeHtml = (s) => s
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;');
+
+const TOKEN_PATTERNS = {
+    java: {
+        comments: /(\/\/.*$|\/\*[\s\S]*?\*\/)/gm,
+        strings: /("([^"\\]|\\.)*"|'([^'\\]|\\.)*')/g,
+        keywords: /\b(public|private|protected|class|interface|extends|implements|static|void|new|return|if|else|switch|case|break|for|while|try|catch|throw|final|this|super|import|package)\b/g,
+        numbers: /\b\d+(\.\d+)?\b/g,
+        funcs: /\b([A-Za-z_]\w*)\s*(?=\()/g,
+    },
+    javascript: {
+        comments: /(\/\/.*$|\/\*[\s\S]*?\*\/)/gm,
+        strings: /(`([^`\\]|\\.)*`|"([^"\\]|\\.)*"|'([^'\\]|\\.)*')/g,
+        keywords: /\b(const|let|var|function|return|if|else|switch|case|break|for|while|class|extends|new|import|export|from|async|await|try|catch|throw)\b/g,
+        numbers: /\b\d+(\.\d+)?\b/g,
+        funcs: /\b([A-Za-z_]\w*)\s*(?=\()/g,
+    },
+    python: {
+        comments: /(#.*$)/gm,
+        strings: /("""[\s\S]*?"""|'''[\s\S]*?'''|"([^"\\]|\\.)*"|'([^'\\]|\\.)*')/g,
+        keywords: /\b(def|class|return|if|elif|else|for|while|try|except|finally|import|from|as|with|pass|break|continue|lambda|yield|in|is|not|and|or)\b/g,
+        numbers: /\b\d+(\.\d+)?\b/g,
+        funcs: /\b([A-Za-z_]\w*)\s*(?=\()/g,
+    },
+    cpp: {
+        comments: /(\/\/.*$|\/\*[\s\S]*?\*\/)/gm,
+        strings: /("([^"\\]|\\.)*"|'([^'\\]|\\.)*')/g,
+        keywords: /\b(int|double|float|char|bool|void|class|struct|public|private|protected|if|else|switch|case|for|while|return|namespace|using|include|new|delete|const|auto)\b/g,
+        numbers: /\b\d+(\.\d+)?\b/g,
+        funcs: /\b([A-Za-z_]\w*)\s*(?=\()/g,
+    },
+    bash: {
+        comments: /(#.*$)/gm,
+        strings: /("([^"\\]|\\.)*"|'([^'\\]|\\.)*')/g,
+        keywords: /\b(if|then|else|fi|for|in|do|done|case|esac|while|function|echo|export|sudo|cd|grep|awk|sed)\b/g,
+        numbers: /\b\d+(\.\d+)?\b/g,
+        funcs: /\b([A-Za-z_]\w*)\s*(?=\()/g,
+    },
+    sql: {
+        comments: /(--.*$)/gm,
+        strings: /('([^'\\]|\\.)*')/g,
+        keywords: /\b(SELECT|FROM|WHERE|JOIN|LEFT|RIGHT|INNER|OUTER|GROUP|BY|ORDER|LIMIT|INSERT|INTO|VALUES|UPDATE|SET|DELETE|CREATE|TABLE|ALTER|DROP|AND|OR|NOT|AS|ON)\b/gi,
+        numbers: /\b\d+(\.\d+)?\b/g,
+        funcs: /\b([A-Za-z_]\w*)\s*(?=\()/g,
+    },
+};
+
+const renderHighlightedLine = (line, langId) => {
+    const p = TOKEN_PATTERNS[langId];
+    if (!p || !line) return line || ' ';
+
+    let html = escapeHtml(line);
+    html = html.replace(p.comments, '<span class="code-token-comment">$1</span>');
+    html = html.replace(p.strings, '<span class="code-token-string">$1</span>');
+    html = html.replace(p.keywords, '<span class="code-token-keyword">$&</span>');
+    html = html.replace(p.numbers, '<span class="code-token-number">$&</span>');
+    html = html.replace(p.funcs, '<span class="code-token-fn">$1</span>');
+    return <span dangerouslySetInnerHTML={{ __html: html }} />;
+};
+
 // ─── IDE Editor (language-themed textarea with line numbers) ─────────────
 const IdeEditor = ({ value, onChange, lang, rows = 10, placeholder }) => {
     const t = lang.theme;
@@ -213,7 +276,9 @@ const CodeBlockModal = ({ code, initialLang, onClose }) => {
             await navigator.clipboard.writeText(code);
             setCopied(true);
             setTimeout(() => setCopied(false), 2000);
-        } catch {}
+        } catch {
+            setCopied(false);
+        }
     };
 
     const t = selectedLang.theme;
@@ -345,7 +410,7 @@ const CodeBlockModal = ({ code, initialLang, onClose }) => {
                                         wordBreak: 'break-word',
                                         verticalAlign: 'top',
                                     }}>
-                                        {line || ' '}
+                                        {renderHighlightedLine(line, selectedLang.id)}
                                     </td>
                                 </tr>
                             ))}
@@ -480,7 +545,7 @@ const useTextSelection = (onSelection) => {
     const containerRef = useRef(null);
 
     useEffect(() => {
-        const handleMouseUp = (e) => {
+        const handleMouseUp = () => {
             setTimeout(() => {
                 const selection = window.getSelection();
                 if (!selection || selection.isCollapsed) return;
@@ -633,7 +698,9 @@ const Notes = () => {
             await navigator.clipboard.writeText(text);
             setCopied(note.id);
             setTimeout(() => setCopied(null), 2000);
-        } catch {}
+        } catch {
+            setCopied(null);
+        }
         setActiveMenu(null);
     };
 
@@ -982,7 +1049,7 @@ const Notes = () => {
                                     {note.tags && note.tags.length > 0 && (
                                         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.3rem' }}>
                                             {note.tags.slice(0, 4).map((tag, i) => (
-                                                <span key={i} style={{ fontSize: '0.68rem', backgroundColor: 'var(--bg-color)', color: 'var(--text-secondary)', padding: '0.15rem 0.5rem', borderRadius: '999px', border: '1px solid var(--border-color)' }}>
+                                                <span key={i} className="note-tag">
                                                     #{tag}
                                                 </span>
                                             ))}
@@ -1022,7 +1089,7 @@ const Notes = () => {
                                     {viewNote.tags?.length > 0 && (
                                         <div style={{ display: 'flex', gap: '0.3rem', marginTop: '0.5rem', flexWrap: 'wrap' }}>
                                             {viewNote.tags.map((t, i) => (
-                                                <span key={i} style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', backgroundColor: 'var(--bg-color)', padding: '0.15rem 0.5rem', borderRadius: '999px', border: '1px solid var(--border-color)' }}>#{t}</span>
+                                                <span key={i} className="note-tag">#{t}</span>
                                             ))}
                                         </div>
                                     )}
@@ -1054,7 +1121,11 @@ const Notes = () => {
                                                 <div style={{ background: `${t.headerBg}cc`, padding: '0.75rem 0.5rem', minWidth: '2.8rem', textAlign: 'right', userSelect: 'none', fontFamily: 'monospace', fontSize: '0.78rem', lineHeight: '1.7', color: t.lineNumColor, borderRight: `1px solid ${t.lineNumColor}22` }}>
                                                     {lines.map((_, i) => <div key={i}>{i + 1}</div>)}
                                                 </div>
-                                                <pre style={{ flex: 1, margin: 0, padding: '0.75rem 1rem', fontFamily: '"JetBrains Mono","Fira Code","Cascadia Code",monospace', fontSize: '0.875rem', lineHeight: '1.7', color: t.codeColor, whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>{viewNote.content}</pre>
+                                                <pre style={{ flex: 1, margin: 0, padding: '0.75rem 1rem', fontFamily: '"JetBrains Mono","Fira Code","Cascadia Code",monospace', fontSize: '0.875rem', lineHeight: '1.7', color: t.codeColor, whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
+                                                    {lines.map((line, i) => (
+                                                        <div key={i}>{renderHighlightedLine(line, lang.id)}</div>
+                                                    ))}
+                                                </pre>
                                             </div>
                                         </div>
                                     );

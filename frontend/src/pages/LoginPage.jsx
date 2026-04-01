@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
-import { Moon, Sun } from 'lucide-react';
+import { Moon, Sun, ArrowRight, ShieldCheck, Sparkles, Clock3 } from 'lucide-react';
 import BrandLogo from '../components/BrandLogo';
 
 const LoginPage = () => {
@@ -31,21 +31,44 @@ const LoginPage = () => {
     };
 
     return (
-        <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'var(--bg-color)', position: 'relative' }}>
-            <button 
-                onClick={toggleTheme} 
-                style={{ position: 'absolute', top: '1.5rem', right: '1.5rem', padding: '0.5rem', borderRadius: '50%', color: 'var(--text-primary)' }}
+        <div className="auth-shell" style={{ position: 'relative' }}>
+            <button
+                onClick={toggleTheme}
+                style={{ position: 'absolute', top: '1.25rem', right: '1.25rem', padding: '0.5rem', borderRadius: '50%', color: 'var(--text-primary)', border: '1px solid var(--border-color)', backgroundColor: 'var(--card-bg)' }}
             >
-                {theme === 'light' ? <Moon size={24} /> : <Sun size={24} />}
+                {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
             </button>
 
-            <div className="card" style={{ width: '100%', maxWidth: '400px', display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-                <div style={{ textAlign: 'center' }}>
-                    <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1rem' }}>
-                        <BrandLogo size={84} />
+            <section className="auth-side" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                <div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
+                        <BrandLogo size={52} />
+                        <strong style={{ fontSize: '1.1rem' }}>A.C.E Planner</strong>
                     </div>
-                    <h1 style={{ fontSize: '1.8rem', fontWeight: 700 }}>Welcome Back</h1>
-                    <p style={{ color: 'var(--text-secondary)' }}>Log in to access your study planner</p>
+                    <h1 style={{ marginTop: '1.2rem', fontSize: 'clamp(1.6rem, 4vw, 2.4rem)', lineHeight: 1.12 }}>Welcome back. Your study flow is waiting.</h1>
+                    <p style={{ marginTop: '0.8rem', color: 'var(--text-secondary)', maxWidth: '42ch' }}>
+                        Continue from where you stopped, review pending tasks, and jump back into focused sessions in seconds.
+                    </p>
+                    <div className="auth-kpi">
+                        <div><strong>92%</strong><p style={{ fontSize: '0.72rem', color: 'var(--text-secondary)' }}>Task completion</p></div>
+                        <div><strong>14d</strong><p style={{ fontSize: '0.72rem', color: 'var(--text-secondary)' }}>Current streak</p></div>
+                        <div><strong>3.8h</strong><p style={{ fontSize: '0.72rem', color: 'var(--text-secondary)' }}>Daily focus</p></div>
+                    </div>
+                </div>
+                <div style={{ marginTop: '1.2rem', display: 'grid', gap: '0.45rem', color: 'var(--text-secondary)', fontSize: '0.86rem' }}>
+                    <span style={{ display: 'flex', alignItems: 'center', gap: '0.45rem' }}><ShieldCheck size={14} color="var(--primary-color)" /> Secure authentication and personal data privacy</span>
+                    <span style={{ display: 'flex', alignItems: 'center', gap: '0.45rem' }}><Clock3 size={14} color="var(--primary-color)" /> Instant sync of notes, timers, and progress</span>
+                    <span style={{ display: 'flex', alignItems: 'center', gap: '0.45rem' }}><Sparkles size={14} color="var(--primary-color)" /> AI study support available whenever needed</span>
+                </div>
+            </section>
+
+            <div className="card" style={{ width: '100%', maxWidth: '440px', display: 'flex', flexDirection: 'column', gap: '1.5rem', alignSelf: 'center' }}>
+                <div style={{ textAlign: 'center' }}>
+                    <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '0.8rem' }}>
+                        <BrandLogo size={70} />
+                    </div>
+                    <h2 style={{ fontSize: '1.6rem', fontWeight: 700 }}>Sign in</h2>
+                    <p style={{ color: 'var(--text-secondary)', fontSize: '0.92rem' }}>Use your account to open your personalized dashboard.</p>
                 </div>
 
                 {errorMsg && (
@@ -76,8 +99,8 @@ const LoginPage = () => {
                         />
                     </div>
                     
-                    <button type="submit" className="btn-primary" style={{ width: '100%', padding: '1rem' }} disabled={isLoading}>
-                        {isLoading ? <span className="loader"></span> : 'Log In'}
+                    <button type="submit" className="btn-primary" style={{ width: '100%', padding: '0.95rem' }} disabled={isLoading}>
+                        {isLoading ? <span className="loader"></span> : <>Log In <ArrowRight size={16} /></>}
                     </button>
                 </form>
 

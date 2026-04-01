@@ -1,6 +1,9 @@
 import { Link } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
-import { Moon, Sun, Target, Calendar, BarChart3, Clock, Rocket, ShieldCheck } from 'lucide-react';
+import {
+    Moon, Sun, Target, Calendar, BarChart3, Clock, Rocket, ShieldCheck,
+    Sparkles, BrainCircuit, CheckCircle2, ArrowRight, TrendingUp
+} from 'lucide-react';
 import BrandLogo from '../components/BrandLogo';
 
 const LandingPage = () => {
@@ -8,86 +11,93 @@ const LandingPage = () => {
 
     return (
         <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-            <nav style={{ padding: '1.5rem 5%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: 'var(--card-bg)', borderBottom: '1px solid var(--border-color)', position: 'sticky', top: 0, zIndex: 10 }}>
-                <Link to="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none', color: 'inherit', lineHeight: 0 }} aria-label="A.C.E home">
-                    <BrandLogo size={72} />
+            <nav style={{ padding: '1.2rem 5%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: 'var(--card-bg)', borderBottom: '1px solid var(--border-color)', position: 'sticky', top: 0, zIndex: 10 }}>
+                <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }} aria-label="A.C.E home">
+                    <BrandLogo size={58} />
+                    <span style={{ fontWeight: 700, letterSpacing: '0.03em' }}>A.C.E Planner</span>
                 </Link>
-                
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                    <button onClick={toggleTheme} style={{ padding: '0.5rem', borderRadius: '50%', color: 'var(--text-primary)' }}>
-                        {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.7rem' }}>
+                    <button onClick={toggleTheme} style={{ padding: '0.55rem', borderRadius: '50%', color: 'var(--text-primary)', border: '1px solid var(--border-color)' }}>
+                        {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
                     </button>
-                    <div style={{ display: 'flex', gap: '1rem' }}>
-                        <Link to="/login" className="btn-outline">Log In</Link>
-                        <Link to="/register" className="btn-primary">Get Started Free</Link>
-                    </div>
+                    <Link to="/login" className="btn-outline">Log In</Link>
+                    <Link to="/register" className="btn-primary">Get Started</Link>
                 </div>
             </nav>
 
-            <main style={{ flex: 1 }}>
-                {/* Hero Section */}
-                <section style={{ padding: '6rem 5%', textAlign: 'center', maxWidth: '800px', margin: '0 auto' }}>
-                    <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 1rem', backgroundColor: 'rgba(249, 115, 22, 0.1)', color: 'var(--primary-color)', borderRadius: '2rem', fontWeight: 600, fontSize: '0.875rem', marginBottom: '1.5rem' }}>
-                        <Rocket size={16} /> Version 2.0 Now Available
+            <main style={{ flex: 1, padding: '3rem 5% 4rem' }}>
+                <section style={{ maxWidth: '1180px', margin: '0 auto' }}>
+                    <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.45rem 0.85rem', borderRadius: '999px', backgroundColor: 'rgba(249, 115, 22, 0.13)', color: 'var(--primary-color)', fontWeight: 600, fontSize: '0.8rem' }}>
+                        <Sparkles size={14} /> Student productivity suite
                     </div>
-                    <h1 style={{ fontSize: '3.5rem', fontWeight: 800, lineHeight: 1.1, marginBottom: '1.5rem', background: 'linear-gradient(90deg, var(--primary-color) 0%, var(--primary-hover) 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-                        Master Your Studies with A.C.E Planner
+                    <h1 style={{ marginTop: '1rem', fontSize: 'clamp(2rem, 5vw, 3.6rem)', fontWeight: 800, lineHeight: 1.08, maxWidth: '740px' }}>
+                        Plan faster, learn deeper, and keep your semester in control.
                     </h1>
-                    <p style={{ fontSize: '1.25rem', color: 'var(--text-secondary)', marginBottom: '2.5rem', lineHeight: 1.6 }}>
-                        The ultimate study companion designed to enhance your focus, track assignments, and analyze performance statistics with real AI insights.
+                    <p style={{ marginTop: '1rem', maxWidth: '700px', color: 'var(--text-secondary)', fontSize: '1.05rem' }}>
+                        A modern workspace for classes, assignments, notes, and revision. Stay focused with timers, organize by subject, and use AI guidance only when you need it.
                     </p>
-                    <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
-                        <Link to="/register" className="btn-primary" style={{ padding: '1rem 2rem', fontSize: '1.1rem' }}>
-                            Start Your Journey <Target size={20} />
+                    <div style={{ marginTop: '1.5rem', display: 'flex', gap: '0.8rem', flexWrap: 'wrap' }}>
+                        <Link to="/register" className="btn-primary" style={{ padding: '0.9rem 1.5rem' }}>
+                            Start Free <ArrowRight size={16} />
                         </Link>
+                        <Link to="/login" className="btn-outline" style={{ padding: '0.9rem 1.5rem' }}>
+                            Open Dashboard
+                        </Link>
+                    </div>
+                    <div className="hero-grid">
+                        <div className="hero-card">
+                            <h3 style={{ fontSize: '1.05rem', fontWeight: 700, marginBottom: '0.8rem' }}>Daily Momentum</h3>
+                            <div style={{ display: 'grid', gap: '0.55rem' }}>
+                                <StatLine icon={<TrendingUp size={14} />} label="Study streak" value="14 days" />
+                                <StatLine icon={<CheckCircle2 size={14} />} label="Tasks completed" value="32 this week" />
+                                <StatLine icon={<Clock size={14} />} label="Focus sessions" value="9 today" />
+                            </div>
+                        </div>
+                        <div className="hero-card">
+                            <h3 style={{ fontSize: '1.05rem', fontWeight: 700, marginBottom: '0.8rem' }}>Why students like A.C.E</h3>
+                            <ul style={{ display: 'grid', gap: '0.55rem', color: 'var(--text-secondary)', fontSize: '0.92rem' }}>
+                                <li style={{ display: 'flex', gap: '0.45rem', alignItems: 'center' }}><BrainCircuit size={14} color="var(--primary-color)" /> Clear weekly workflow with zero clutter</li>
+                                <li style={{ display: 'flex', gap: '0.45rem', alignItems: 'center' }}><Rocket size={14} color="var(--primary-color)" /> Faster revision with searchable smart notes</li>
+                                <li style={{ display: 'flex', gap: '0.45rem', alignItems: 'center' }}><ShieldCheck size={14} color="var(--primary-color)" /> One workspace for planning and progress</li>
+                            </ul>
+                        </div>
                     </div>
                 </section>
 
-                {/* Features Section */}
-                <section style={{ padding: '5rem 5%', backgroundColor: 'var(--card-bg)' }}>
-                    <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
-                        <h2 style={{ fontSize: '2.5rem', fontWeight: 700, marginBottom: '1rem' }}>Built for Peak Academic Performance</h2>
-                    </div>
-
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem', maxWidth: '1200px', margin: '0 auto' }}>
-                        <FeatureCard 
-                            icon={<Calendar size={32} color="var(--primary-color)" />}
-                            title="Smart Scheduling"
-                            desc="Organize your weekly learning blocks and never miss an assignment deadline again."
-                        />
-                        <FeatureCard 
-                            icon={<Clock size={32} color="var(--primary-color)" />}
-                            title="Focus Pomodoro"
-                            desc="Maximize your deep work intervals using our built-in customized Pomodoro timer."
-                        />
-                        <FeatureCard 
-                            icon={<BarChart3 size={32} color="var(--primary-color)" />}
-                            title="Advanced Analytics"
-                            desc="Track your study hours, session streaks, and performance statistics across subjects."
-                        />
-                         <FeatureCard 
-                            icon={<ShieldCheck size={32} color="var(--primary-color)" />}
-                            title="AI Study Assistant"
-                            desc="Powered by Google Gemini, instantly ask questions and receive study-focused breakdowns."
-                        />
+                <section style={{ marginTop: '3rem' }}>
+                    <div style={{ maxWidth: '1180px', margin: '0 auto' }}>
+                        <h2 style={{ fontSize: '1.9rem', fontWeight: 700, marginBottom: '1rem' }}>Built for peak academic performance</h2>
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(230px, 1fr))', gap: '1rem' }}>
+                            <FeatureCard icon={<Calendar size={22} color="var(--primary-color)" />} title="Smart Scheduling" desc="Organize weekly study blocks and never miss deadlines." />
+                            <FeatureCard icon={<Clock size={22} color="var(--primary-color)" />} title="Focus Timer" desc="Structured deep-work sessions with rest intervals." />
+                            <FeatureCard icon={<BarChart3 size={22} color="var(--primary-color)" />} title="Progress Analytics" desc="Track consistency and identify improvement areas." />
+                            <FeatureCard icon={<Target size={22} color="var(--primary-color)" />} title="Goal Tracking" desc="Set outcomes and monitor your completion rate." />
+                        </div>
                     </div>
                 </section>
             </main>
 
-            <footer style={{ padding: '2rem 5%', textAlign: 'center', backgroundColor: 'var(--card-bg)', borderTop: '1px solid var(--border-color)', color: 'var(--text-secondary)' }}>
-                &copy; {new Date().getFullYear()} A.C.E Planner. Built for students targeting excellence.
+            <footer style={{ padding: '1.4rem 5%', textAlign: 'center', borderTop: '1px solid var(--border-color)', color: 'var(--text-secondary)' }}>
+                &copy; {new Date().getFullYear()} A.C.E Planner
             </footer>
         </div>
     );
 };
 
 const FeatureCard = ({ icon, title, desc }) => (
-    <div className="card" style={{ display: 'flex', flexDirection: 'column', gap: '1rem', alignItems: 'flex-start' }}>
-        <div style={{ padding: '1rem', backgroundColor: 'rgba(249, 115, 22, 0.1)', borderRadius: '1rem' }}>
+    <div className="card" style={{ display: 'flex', flexDirection: 'column', gap: '0.7rem', alignItems: 'flex-start' }}>
+        <div style={{ padding: '0.65rem', backgroundColor: 'rgba(249, 115, 22, 0.1)', borderRadius: '0.8rem' }}>
             {icon}
         </div>
-        <h3 style={{ fontSize: '1.5rem', fontWeight: 600 }}>{title}</h3>
-        <p style={{ color: 'var(--text-secondary)', lineHeight: 1.6 }}>{desc}</p>
+        <h3 style={{ fontSize: '1.1rem', fontWeight: 600 }}>{title}</h3>
+        <p style={{ color: 'var(--text-secondary)', lineHeight: 1.6, fontSize: '0.92rem' }}>{desc}</p>
+    </div>
+);
+
+const StatLine = ({ icon, label, value }) => (
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.5rem', fontSize: '0.85rem', padding: '0.45rem 0.55rem', borderRadius: '0.65rem', backgroundColor: 'rgba(148,163,184,0.08)' }}>
+        <span style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', color: 'var(--text-secondary)' }}>{icon} {label}</span>
+        <strong style={{ fontSize: '0.8rem' }}>{value}</strong>
     </div>
 );
 

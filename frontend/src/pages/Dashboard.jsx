@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import {
     LayoutDashboard, BookOpen, CheckSquare, Calendar, Timer,
     BarChart3, Settings as SettingsIcon, Moon, Sun, LogOut,
-    MessageSquare, StickyNote, Menu, X, Layers
+    MessageSquare, StickyNote, Menu, X, Layers, Home
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -269,6 +269,23 @@ const Dashboard = () => {
 
                     {/* Header right: theme & avatar */}
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                        <button
+                            onClick={() => navigate('/')}
+                            style={{
+                                display: 'flex', alignItems: 'center', gap: '0.45rem',
+                                padding: '0.45rem 0.7rem',
+                                borderRadius: '0.5rem',
+                                color: 'var(--primary-color)',
+                                backgroundColor: 'var(--card-bg)',
+                                border: '1px solid var(--border-color)',
+                                fontSize: '0.78rem',
+                                fontWeight: 600
+                            }}
+                            title="Go to Landing Page"
+                        >
+                            <Home size={16} />
+                            {!isMobile && <span>Home</span>}
+                        </button>
                         <button
                             onClick={toggleTheme}
                             style={{

@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { useAuth } from '../../context/AuthContext';
 import { useData } from '../../context/DataContext';
-import { Database, Download, Trash2, Info } from 'lucide-react';
+import { Database, Download, Info } from 'lucide-react';
 
 const Settings = () => {
     const { user } = useAuth();
@@ -45,18 +45,6 @@ const Settings = () => {
                         </div>
                         <button onClick={exportData} className="btn-primary" style={{ backgroundColor: 'var(--success-color)' }}>
                             <Download size={18} /> Export JSON
-                        </button>
-                    </div>
-
-                    <div style={{ height: '1px', backgroundColor: 'var(--border-color)' }}></div>
-
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
-                        <div>
-                            <div style={{ fontWeight: 600, color: 'var(--danger-color)' }}>Danger Zone</div>
-                            <div style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>Wipe all your data. This cannot be undone.</div>
-                        </div>
-                        <button className="btn-primary" style={{ backgroundColor: 'var(--danger-color)' }} onClick={() => alert("Are you sure you want to delete everything? (Disabled for safety demo)")}>
-                            <Trash2 size={18} /> Reset Database
                         </button>
                     </div>
                 </div>
